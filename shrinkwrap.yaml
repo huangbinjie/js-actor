@@ -1,0 +1,9 @@
+createdWith: pnpm@0.68.0
+dependencies:
+  '@types/node@^7.0.27': 7.0.27
+  events@^1.1.1: 1.1.1
+packages:
+  /@types/node/7.0.27: ba5e1a87aca2b4f5817289615ffe56472927687e
+  /events/1.1.1: 9ebdb7635ad099c70dcc4c2a1f5004288e8bd924
+registry: 'https://registry.npmjs.org/'
+version: 2

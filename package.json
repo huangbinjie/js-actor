@@ -1,0 +1,14 @@
+{
+  "name": "js-actor",
+  "version": "1.0.0",
+  "description": "javascript actor",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "corol",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^7.0.27",
+    "events": "^1.1.1"
+  }
+}

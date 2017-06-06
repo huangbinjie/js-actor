@@ -1,0 +1,9 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"module": "commonjs"
+	},
+	"exclude": [
+		"node_modules"
+	]
+}
