@@ -4,9 +4,8 @@
 //  * a configuration object using in creating an actor
 //  */
 // export class Props {
-// 	public static create(actor: () => new () => AbstractActor) {
-// 		const actorObj = actor()
-// 		new Props(new actorObj())
+// 	public static create(actor: AbstractActor) {
+// 		new Props(actor)
 // 	}
 
 // 	public setActor(actor: AbstractActor) {

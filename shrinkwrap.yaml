@@ -1,9 +1,17 @@
 createdWith: pnpm@0.68.0
 dependencies:
   '@types/node@^7.0.27': 7.0.27
+  '@types/uuid@^3.0.0': 3.0.0
   events@^1.1.1: 1.1.1
+  uuid@^3.0.1: 3.0.1
 packages:
   /@types/node/7.0.27: ba5e1a87aca2b4f5817289615ffe56472927687e
+  /@types/node/7.0.28: 3a8c62b718a73bbb89ede4aba5ab12c8f822c36e
+  /@types/uuid/3.0.0:
+    dependencies:
+      '@types/node': 7.0.28
+    resolution: be93b14bcf97f59c079a9e58754960b5efd946c3
   /events/1.1.1: 9ebdb7635ad099c70dcc4c2a1f5004288e8bd924
+  /uuid/3.0.1: 6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1
 registry: 'https://registry.npmjs.org/'
 version: 2

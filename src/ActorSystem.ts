@@ -1,37 +1,47 @@
 import { EventEmitter } from "events"
+import { v1 } from "uuid"
 import { AbstractActor } from "./AbstractActor"
 import { ActorRef } from "./ActorRef"
 
-export type Listener<T = object> = {
-	message: new (...args: any[]) => T
-	callback: (value: T) => void
-}
+/** An ActorSystem is a heavyweight structure that will allocate 1…N Threads, so create one per logical application. */
 
 export class ActorSystem {
+	private children = new Map<string, ActorRef>()
+
 	public static create(name: string) {
 		return new ActorSystem(name)
 	}
 
-	private subject = new EventEmitter()
-	private actors = new Map()
+	// Main event bus of this actor system, used for example for logging.
+	public eventStream = new EventEmitter()
 
-	public dispatch(message: object) {
-		this.subject.emit("message", message)
+	// dispatch event to listening actor
+	public dispatch(event: string, message: object) {
+		this.eventStream.emit(event, message)
 	}
 
-	public on({ message, callback }: Listener) {
-		this.subject.addListener("message", (value: Object) => {
-			if (value instanceof message) callback(value)
-		})
+	// Create new actor as child of this context and give it an automatically generated name
+	public actorOf(actor: AbstractActor, name = v1()) {
+		const actorRef = new ActorRef(actor, this, name)
+		this.children.set(name, actorRef)
+		actor.receive()
+		return actorRef
 	}
 
-	public actorOf(actor: AbstractActor, name: string) {
-		actor.setSystem(this)
-		actor.createReceive()
-		this.actors.set(name, actor)
-		return new ActorRef(actor, this)
+	public stop(actorRef: ActorRef) {
+		this.children.delete(actorRef.name)
+		const actor = actorRef.getActor()
+		actor.stop()
 	}
 
-	constructor(private name: string) {
+	public terminal() {
+		this.eventStream.removeAllListeners()
 	}
+
+	constructor(private name: string) { }
+}
+
+export type Listener<T = object> = {
+	message?: (new (...args: any[]) => T)
+	callback: (value: T) => void
 }

@@ -1,6 +1,7 @@
 import { ActorSystem, Listener } from "./ActorSystem"
 import { Receive } from "./Receive"
 
+/** a helper class to store logic and create receive object */
 export class ReceiveBuilder {
 	private listeners: Listener[] = []
 
@@ -13,8 +14,13 @@ export class ReceiveBuilder {
 		return this
 	}
 
+	public matchAny(callback: Listener["callback"]) {
+		this.listeners.push({ callback })
+		return this
+	}
+
 	public build() {
-		return new Receive(this.system, this.listeners)
+		return new Receive(this.listeners)
 	}
 
 	constructor(private system: ActorSystem) {

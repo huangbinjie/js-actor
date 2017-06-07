@@ -3,11 +3,22 @@
 		"strict": true,
 		"module": "commonjs",
 		"target": "es5",
+		"outDir": "bin",
+		"typeRoots": [
+			"typings"
+		],
 		"lib": [
 			"es2015"
 		]
 	},
+	"files": [
+		"typings/index.d.ts"
+	],
+	"include": [
+		"src"
+	],
 	"exclude": [
-		"node_modules"
+		"node_modules",
+		"demo"
 	]
 }

@@ -1,20 +1,37 @@
-import { ActorSystem, Listener } from "./ActorSystem"
+import { ActorContext } from "./ActorContext"
 import { ReceiveBuilder } from "./ReceiveBuilder"
 import { Receive } from "./Receive"
+import { Scheduler } from "./Scheduler"
 export abstract class AbstractActor {
-	private system: ActorSystem
-	public abstract createReceive(): Receive
+	public context: ActorContext
+	protected abstract createReceive(): Receive
 
-	public setSystem(system: ActorSystem) {
-		this.system = system
+	public getContext() {
+		return this.context
+	}
+	public getSelf() {
+		return this.context.self
+	}
+	public getSender() {
+		return this.context.sender
 	}
 
-	public getSystem() {
-		return this.system
+	public receive() {
+		const listeners = this.createReceive().getListener()
+		const eventStream = this.context.system.eventStream
+		this.context.scheduler = new Scheduler(eventStream, this.context.name, listeners)
 	}
 
 	public receiveBuilder() {
-		return ReceiveBuilder.create(this.system)
+		return ReceiveBuilder.create(this.context.system)
+	}
+
+	public stop() {
+		this.context.scheduler.cancel()
+	}
+
+	public alive() {
+		return this.context.scheduler.isCancelled()
 	}
 
 }
