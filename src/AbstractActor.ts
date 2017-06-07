@@ -23,7 +23,7 @@ export abstract class AbstractActor {
 	}
 
 	public receiveBuilder() {
-		return ReceiveBuilder.create(this.context.system)
+		return ReceiveBuilder.create()
 	}
 
 	public stop() {

@@ -5,8 +5,8 @@ import { Receive } from "./Receive"
 export class ReceiveBuilder {
 	private listeners: Listener[] = []
 
-	public static create(system: ActorSystem) {
-		return new ReceiveBuilder(system)
+	public static create() {
+		return new ReceiveBuilder()
 	}
 
 	public match<T extends object>(message: Listener<T>["message"], callback: Listener<T>["callback"]) {
@@ -23,7 +23,7 @@ export class ReceiveBuilder {
 		return new Receive(this.listeners)
 	}
 
-	constructor(private system: ActorSystem) {
+	constructor() {
 
 	}
 }
