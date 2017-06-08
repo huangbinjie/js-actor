@@ -3,15 +3,23 @@ import { ActorSystem } from "./ActorSystem"
 import { ActorContext } from "./ActorContext"
 
 export class ActorRef {
-	constructor(private actor: AbstractActor, private system: ActorSystem, public name: string) {
+	constructor(
+		private actor: AbstractActor,
+		private system: ActorSystem,
+		public name: string,
+		public parent: Optional<ActorRef>,
+		path: string
+	) {
 		const context = new ActorContext({
-			name: name,
+			name,
 			self: this,
 			sender: null,
-			system: system
+			system,
+			parent,
+			path
 		})
 
-		actor.context = context
+		actor.setContext(context)
 	}
 
 	public getActor() {
@@ -19,7 +27,7 @@ export class ActorRef {
 	}
 
 	public tell(message: object, sender?: ActorRef) {
-		this.actor.context.sender = sender || null
+		this.actor.getContext().sender = sender || null
 		// TODO: impl dispatch sender
 		this.system.dispatch(this.name, message)
 	}

@@ -1,7 +1,9 @@
 import { EventEmitter } from "events"
-import { v1 } from "uuid"
 import { AbstractActor } from "./AbstractActor"
 import { ActorRef } from "./ActorRef"
+import { RootActor } from "./RootActor"
+import { v1 } from "uuid"
+
 
 /** An ActorSystem is a heavyweight structure that will allocate 1…N Threads, so create one per logical application. */
 
@@ -22,7 +24,9 @@ export class ActorSystem {
 
 	// Create new actor as child of this context and give it an automatically generated name
 	public actorOf(actor: AbstractActor, name = v1()) {
-		const actorRef = new ActorRef(actor, this, name)
+		const rootActor = new RootActor
+		const rootActorRef = new ActorRef(rootActor, this, "root", null, "/")
+		const actorRef = new ActorRef(actor, this, name, rootActorRef, "/" + name)
 		this.children.set(name, actorRef)
 		actor.receive()
 		return actorRef

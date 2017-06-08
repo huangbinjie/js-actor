@@ -3,11 +3,14 @@ import { ReceiveBuilder } from "./ReceiveBuilder"
 import { Receive } from "./Receive"
 import { Scheduler } from "./Scheduler"
 export abstract class AbstractActor {
-	public context: ActorContext
+	private context: ActorContext
 	protected abstract createReceive(): Receive
 
 	public getContext() {
 		return this.context
+	}
+	public setContext(context: ActorContext) {
+		this.context = context
 	}
 	public getSelf() {
 		return this.context.self
