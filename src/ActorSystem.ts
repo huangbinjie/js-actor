@@ -36,6 +36,7 @@ export class ActorSystem {
 
 	public terminal() {
 		this.eventStream.removeAllListeners()
+		this.children.clear()
 	}
 
 	constructor(private name: string) { }
