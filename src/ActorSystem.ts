@@ -5,10 +5,12 @@ import { RootActor } from "./RootActor"
 import { v1 } from "uuid"
 
 
-/** An ActorSystem is a heavyweight structure that will allocate 1…N Threads, so create one per logical application. */
-
+/** An ActorSystem is a heavyweight structure that will allocate listenner.
+ * 	All actor listen ActorSystem's eventStream.
+ *  So create one per logical application. 
+*/
 export class ActorSystem {
-	private children = new Map<string, ActorRef>()
+	private rootActorRef = new ActorRef(new RootActor, this, "root", null, "/")
 
 	public static create(name: string) {
 		return new ActorSystem(name)
@@ -24,23 +26,18 @@ export class ActorSystem {
 
 	// Create new actor as child of this context and give it an automatically generated name
 	public actorOf(actor: AbstractActor, name = v1()) {
-		const rootActor = new RootActor
-		const rootActorRef = new ActorRef(rootActor, this, "root", null, "/")
-		const actorRef = new ActorRef(actor, this, name, rootActorRef, "/" + name)
-		this.children.set(name, actorRef)
-		actor.receive()
-		return actorRef
+		this.rootActorRef.getActor().getContext().actorOf(actor, "/" + name)
+		return this.rootActorRef
 	}
 
 	public stop(actorRef: ActorRef) {
-		this.children.delete(actorRef.name)
-		const actor = actorRef.getActor()
-		actor.stop()
+		this.rootActorRef.getActor().getContext().stop(actorRef)
 	}
 
+	/* release all listener, and clear rootActor's children */
 	public terminal() {
 		this.eventStream.removeAllListeners()
-		this.children.clear()
+		this.rootActorRef.getActor().getContext().children.clear()
 	}
 
 	constructor(private name: string) { }

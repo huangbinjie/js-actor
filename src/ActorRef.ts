@@ -2,6 +2,7 @@ import { AbstractActor } from "./AbstractActor"
 import { ActorSystem } from "./ActorSystem"
 import { ActorContext } from "./ActorContext"
 
+/** handle reference to an actor, whitch may reside on an actor or root actor */
 export class ActorRef {
 	constructor(
 		private actor: AbstractActor,

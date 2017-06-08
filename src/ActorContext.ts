@@ -4,6 +4,9 @@ import { Scheduler } from "./Scheduler"
 import { AbstractActor } from "./AbstractActor"
 import { v1 } from "uuid"
 
+/** the Actor context.
+ *  Exposes contextual information for the actor
+ */
 export class ActorContext implements IContext {
 	private _children = new Map<string, ActorRef>()
 
@@ -22,18 +25,29 @@ export class ActorContext implements IContext {
 		return actorRef
 	}
 
-	public child(name: string) {
-		return this._children.get(name)
+	public child(name: string): Optional<ActorRef> {
+		const child = this._children.get(name)
+		if (!!child) {
+			for (let child of this._children.values()) {
+				const targetActor = child.getActor().getContext().child(name)
+				if (targetActor) return targetActor
+			}
+		}
+		return child || null
 	}
 
 	public get children() {
 		return this._children
 	}
-
+	// stop self from parent, elsewise try to stop child
 	public stop(actorRef: ActorRef) {
-		this.children.delete(actorRef.name)
-		const actor = actorRef.getActor()
-		actor.stop()
+		if (this.self.name === actorRef.name) {
+			this.parent!.getActor().getContext().stop(actorRef)
+		} else {
+			for (let child of this.children.values()) {
+				if (child.name === actorRef.name) return child.getActor().stop()
+			}
+		}
 	}
 
 	constructor(initialContext: IContext) {

@@ -1,10 +1,12 @@
 import { EventEmitter } from "events"
 import { Listener } from "./ActorSystem"
 
-/** a schedule service to listen mailbox */
+/** a schedule service to listen current system's event stream
+ *  for performance perspective，current implemantation all listen system, not listen actor respective
+ */
 export class Scheduler {
 	private listener = (value: Object) => {
-		
+
 		for (let listener of this.listeners) {
 			if (listener.message && value instanceof listener.message) return listener.callback(value)
 		}
@@ -14,9 +16,7 @@ export class Scheduler {
 		if (defaultListener) defaultListener.callback({})
 	}
 
-	constructor(private eventStream: EventEmitter, private event: string, private listeners: Listener[]) {
-		this.start()
-	}
+	constructor(private eventStream: EventEmitter, private event: string, private listeners: Listener[]) { }
 
 	public cancel() {
 		try {
