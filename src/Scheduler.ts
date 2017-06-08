@@ -28,7 +28,7 @@ export class Scheduler {
 	}
 
 	public isCancelled() {
-		return !this.eventStream.eventNames().find(name => name === this.event)
+		return !this.eventStream.listeners(this.event).length
 	}
 
 	public pause() {

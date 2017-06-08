@@ -17,7 +17,7 @@ export class ActorSystem {
 	}
 
 	// Main event bus of this actor system, used for example for logging.
-	public eventStream = new EventEmitter()
+	public readonly eventStream = new EventEmitter()
 
 	// dispatch event to listening actor
 	public dispatch(event: string, message: object) {
@@ -26,8 +26,7 @@ export class ActorSystem {
 
 	// Create new actor as child of this context and give it an automatically generated name
 	public actorOf(actor: AbstractActor, name = v1()) {
-		this.rootActorRef.getActor().getContext().actorOf(actor, "/" + name)
-		return this.rootActorRef
+		return this.rootActorRef.getActor().getContext().actorOf(actor, "/" + name)
 	}
 
 	public stop(actorRef: ActorRef) {

@@ -40,7 +40,7 @@ export abstract class AbstractActor {
 		this.postStop()
 	}
 
-	public alive() {
+	public isAlive() {
 		return !this.context.scheduler.isCancelled()
 	}
 	/** is called when actor is started*/
