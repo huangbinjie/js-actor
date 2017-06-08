@@ -12,7 +12,10 @@ export class Greeter extends AbstractActor {
 
 	public createReceive() {
 		return this.receiveBuilder()
-			.match(WhoToGreet, wtg => this.greeting = this.message + ", " + wtg.who)
+			.match(WhoToGreet, wtg => {
+				console.log(wtg)
+				this.greeting = this.message + ", " + wtg.who
+			})
 			.match(Greet, () => this.printer.tell(new Greeting(this.greeting), this.getSelf()))
 			.match(Replay, reply => console.info("receive message from printer: " + reply.message))
 			.build()

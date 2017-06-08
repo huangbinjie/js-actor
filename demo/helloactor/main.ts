@@ -15,5 +15,16 @@ const howdyGreeter = system.actorOf(new Greeter("Howdy", printerActor), "howdyGr
 howdyGreeter.tell(new WhoToGreet("Actor"))
 howdyGreeter.tell(new Greet())
 
-howdyGreeter.tell(new WhoToGreet("Lightbend"));
-howdyGreeter.tell(new Greet());
+howdyGreeter.tell(new WhoToGreet("Lightbend"))
+howdyGreeter.tell(new Greet())
+
+console.log(howdyGreeter.getActor().isAlive()) // true
+
+system.stop(howdyGreeter)
+
+howdyGreeter.tell(new WhoToGreet("corol"))
+howdyGreeter.tell(new Greet()) // nothing
+
+console.log(howdyGreeter.getActor().isAlive()) // false
+
+system.terminal()
