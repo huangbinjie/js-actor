@@ -19,7 +19,7 @@ export class ActorContext implements IContext {
 	public path: string
 
 	public actorOf(actor: AbstractActor, name = v1()) {
-		const actorRef = new ActorRef(actor, this.system, name, this.self, this.path + name)
+		const actorRef = new ActorRef(actor, this.system, name, this.self, this.path + name + "/")
 		this._children.set(name, actorRef)
 		actor.receive()
 		return actorRef
@@ -27,7 +27,7 @@ export class ActorContext implements IContext {
 
 	public child(name: string): Optional<ActorRef> {
 		const child = this._children.get(name)
-		if (!!child) {
+		if (!child) {
 			for (let child of this._children.values()) {
 				const targetActor = child.getActor().getContext().child(name)
 				if (targetActor) return targetActor
