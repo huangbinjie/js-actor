@@ -6,7 +6,7 @@ export class ServerResponse extends AbstractActor {
 		return this.receiveBuilder()
 			.match(Response, response => {
 				console.info("response: " + response.body)
-				this.stop()
+				this.context.stop()
 			})
 			.build()
 	}

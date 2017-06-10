@@ -18,13 +18,13 @@ howdyGreeter.tell(new Greet())
 howdyGreeter.tell(new WhoToGreet("Lightbend"))
 howdyGreeter.tell(new Greet())
 
-console.log(howdyGreeter.getActor().isAlive()) // true
+console.log(howdyGreeter.getContext().isAlive()) // true
 
 system.stop(howdyGreeter)
 
 howdyGreeter.tell(new WhoToGreet("corol"))
 howdyGreeter.tell(new Greet()) // nothing
 
-console.log(howdyGreeter.getActor().isAlive()) // false
+console.log(howdyGreeter.getContext().isAlive()) // false
 
 system.terminal()

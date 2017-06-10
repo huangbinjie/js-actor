@@ -8,11 +8,11 @@ export class Controller extends AbstractActor {
 	public createReceive() {
 		return this.receiveBuilder()
 			.match(Request, request => {
-				const responseActor = this.getContext().actorOf(new ServerResponse)
+				const responseActor = this.context.actorOf(new ServerResponse)
 				// some logic
 				const say = request.query.say
 				responseActor.tell(new Response(say + "!"))
-				this.stop()
+				this.context.stop()
 			})
 			.build()
 	}

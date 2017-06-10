@@ -5,7 +5,7 @@ import { Listener } from "./ActorSystem"
  *  for performance perspective，current implemantation all listen system, not listen actor respective
  */
 export class Scheduler {
-	private listener = (value: Object) => {
+	private callback = (value: Object) => {
 
 		for (let listener of this.listeners) {
 			if (listener.message && value instanceof listener.message) return listener.callback(value)
@@ -20,7 +20,7 @@ export class Scheduler {
 
 	public cancel() {
 		try {
-			this.eventStream.removeListener(this.event, this.listener)
+			this.eventStream.removeListener(this.event, this.callback)
 		} catch (e) {
 			return false
 		}
@@ -41,6 +41,6 @@ export class Scheduler {
 	}
 
 	public start() {
-		this.eventStream.addListener(this.event, this.listener)
+		this.eventStream.addListener(this.event, this.callback)
 	}
 }

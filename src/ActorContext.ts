@@ -29,7 +29,7 @@ export class ActorContext implements IContext {
 		const child = this._children.get(name)
 		if (!child) {
 			for (let child of this._children.values()) {
-				const targetActor = child.getActor().getContext().child(name)
+				const targetActor = child.getContext().child(name)
 				if (targetActor) return targetActor
 			}
 		}
@@ -40,14 +40,23 @@ export class ActorContext implements IContext {
 		return this._children
 	}
 	// stop self from parent, elsewise try to stop child
-	public stop(actorRef: ActorRef) {
+	public stop(actorRef = this.self) {
 		if (this.self.name === actorRef.name) {
-			this.parent.getActor().getContext().stop(actorRef)
+			this.parent.getContext().stop(actorRef)
 		} else {
+			this.children.delete(this.name)
 			for (let child of this.children.values()) {
-				if (child.name === actorRef.name) return child.getActor().stop()
+				if (child.name === actorRef.name) {
+					child.getContext().scheduler.cancel()
+					child.getActor().postStop()
+					return
+				}
 			}
 		}
+	}
+
+	public isAlive() {
+		return !this.scheduler.isCancelled()
 	}
 
 	constructor(initialContext: IContext) {

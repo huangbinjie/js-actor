@@ -7,19 +7,22 @@ import { Scheduler } from "./Scheduler"
  * abstract class that should be extended to create self actor
  */
 export abstract class AbstractActor {
-	private context: ActorContext
+	private _context: ActorContext
 	protected abstract createReceive(): Receive
 
-	public getContext() {
-		return this.context
+	public get context() {
+		return this._context
 	}
-	public setContext(context: ActorContext) {
-		this.context = context
+
+	public set context(context: ActorContext) {
+		this._context = context
 	}
-	public getSelf() {
+
+	protected getSelf() {
 		return this.context.self
 	}
-	public getSender() {
+
+	protected getSender() {
 		return this.context.sender
 	}
 
@@ -31,18 +34,10 @@ export abstract class AbstractActor {
 		this.preStart()
 	}
 
-	public receiveBuilder() {
+	protected receiveBuilder() {
 		return ReceiveBuilder.create()
 	}
 
-	public stop() {
-		this.context.scheduler.cancel()
-		this.postStop()
-	}
-
-	public isAlive() {
-		return !this.context.scheduler.isCancelled()
-	}
 	/** is called when actor is started*/
 	public preStart() {
 

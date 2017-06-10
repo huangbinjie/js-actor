@@ -8,8 +8,9 @@ export class Router extends AbstractActor {
 		return this.receiveBuilder()
 			.match(Request, request => {
 				// dynamic allocate actor to run logic 
-				const controllerRef = this.getContext().actorOf(new Controller)
+				const controllerRef = this.context.actorOf(new Controller)
 				controllerRef.tell(request)
+				this.context.stop()
 			})
 			.matchAny(() => {/* 404 */ })
 			.build()

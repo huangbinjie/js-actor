@@ -2,7 +2,10 @@
 	"compilerOptions": {
 		"strict": true,
 		"module": "commonjs",
-		"target": "es6"
+		"target": "es6",
+		"typeRoots": [
+			"../../typings"
+		]
 	},
 	"exclude": [
 		"node_modules"

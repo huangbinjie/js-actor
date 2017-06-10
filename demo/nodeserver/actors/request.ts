@@ -8,7 +8,7 @@ export class ServerResquest extends AbstractActor {
 	public createReceive() {
 		return this.receiveBuilder()
 			.match(Request, request => {
-				const routerActor = this.getContext().actorOf(new Router)
+				const routerActor = this.context.actorOf(new Router)
 				routerActor.tell(request, this.getSelf())
 			})
 			.build()

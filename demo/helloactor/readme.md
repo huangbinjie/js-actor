@@ -1,7 +1,10 @@
 # helloactor
 
-## how to use
+akka [quickstart](http://akka.io/try-akka/) example
 
-compile ts file: `tsc`
-bundle js file: `webpack main.js app.js`
-open `index.html` in your browser, then you can see the log in your console
+```sh
+// compile
+tsc -p ./
+// run
+node main.js
+```

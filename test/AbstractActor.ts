@@ -24,12 +24,12 @@ test("find grandchild", t => {
 	}
 
 	const selfActor = system.actorOf(new Self, "self")
-	const childActor = selfActor.getActor().getContext().actorOf(new Child, "child")
-	const grandchild = childActor.getActor().getContext().actorOf(new Grandchild, "grandchild")
+	const childActor = selfActor.getContext().actorOf(new Child, "child")
+	const grandchild = childActor.getContext().actorOf(new Grandchild, "grandchild")
 
-	const grandChildActor = selfActor.getActor().getContext().child("grandchild")
+	const grandChildActor = selfActor.getContext().child("grandchild")
 	t.truthy(grandChildActor)
-	const grandChildContext = grandChildActor.getActor().getContext()
+	const grandChildContext = grandChildActor.getContext()
 	t.is(grandChildContext.path, "/self/child/grandchild/")
 	t.is(grandChildContext.name, "grandchild")
 })
