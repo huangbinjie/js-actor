@@ -8,7 +8,7 @@ export class ActorRef {
 		private actor: AbstractActor,
 		private system: ActorSystem,
 		public name: string,
-		parent: Optional<ActorRef>,
+		parent: ActorRef,
 		path: string
 	) {
 		const context = new ActorContext({

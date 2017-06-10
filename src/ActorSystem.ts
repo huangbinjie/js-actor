@@ -10,7 +10,7 @@ import { v1 } from "uuid"
  *  So create one per logical application. 
 */
 export class ActorSystem {
-	private rootActorRef = new ActorRef(new RootActor, this, "root", null, "/")
+	private rootActorRef = new ActorRef(new RootActor, this, "root", {} as ActorRef, "/")
 
 	public static create(name: string) {
 		return new ActorSystem(name)

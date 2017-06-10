@@ -15,7 +15,7 @@ export class ActorContext implements IContext {
 	public system: ActorSystem
 	public sender: Optional<ActorRef> = null
 	public scheduler: Scheduler
-	public parent: Optional<ActorRef> = null
+	public parent: ActorRef
 	public path: string
 
 	public actorOf(actor: AbstractActor, name = v1()) {
@@ -42,7 +42,7 @@ export class ActorContext implements IContext {
 	// stop self from parent, elsewise try to stop child
 	public stop(actorRef: ActorRef) {
 		if (this.self.name === actorRef.name) {
-			this.parent!.getActor().getContext().stop(actorRef)
+			this.parent.getActor().getContext().stop(actorRef)
 		} else {
 			for (let child of this.children.values()) {
 				if (child.name === actorRef.name) return child.getActor().stop()
@@ -60,6 +60,6 @@ export interface IContext {
 	self: ActorRef,
 	system: ActorSystem,
 	sender: Optional<ActorRef>,
-	parent: Optional<ActorRef>,
+	parent: ActorRef,
 	path: string
 }
