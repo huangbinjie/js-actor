@@ -1,5 +1,6 @@
 node_modules/
 _test/
+bin/
 src/**/*.js
 demo/**/*.js
 .Ds_Store

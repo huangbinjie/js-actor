@@ -1,4 +1,5 @@
 import { ActorContext } from "./ActorContext"
+import { ActorRef } from "./ActorRef"
 import { ReceiveBuilder } from "./ReceiveBuilder"
 import { Receive } from "./Receive"
 import { Scheduler } from "./Scheduler"

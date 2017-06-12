@@ -1,6 +1,8 @@
 {
   "name": "js-actor",
   "version": "1.0.0",
+  "main": "bin/index.js",
+  "typings": "bin/index.d.ts",
   "description": "javascript actor",
   "scripts": {
     "build_test": "rm -fr _test && tsc -p test/",
