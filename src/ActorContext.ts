@@ -2,7 +2,7 @@ import { ActorSystem } from "./ActorSystem"
 import { ActorRef } from "./ActorRef"
 import { Scheduler } from "./Scheduler"
 import { AbstractActor } from "./AbstractActor"
-import { v1 } from "uuid"
+import { generate } from "shortid"
 
 /** the Actor context.
  *  Exposes contextual information for the actor
@@ -18,7 +18,7 @@ export class ActorContext implements IContext {
 	public parent: ActorRef
 	public path: string
 
-	public actorOf(actor: AbstractActor, name = v1()) {
+	public actorOf(actor: AbstractActor, name = generate()) {
 		const actorRef = new ActorRef(actor, this.system, name, this.self, this.path + name + "/")
 		this._children.set(name, actorRef)
 		actor.receive()

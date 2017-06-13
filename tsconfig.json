@@ -8,9 +8,6 @@
 		"removeComments": true,
 		"preserveConstEnums": true,
 		"declaration": true,
-		"typeRoots": [
-			"typings"
-		],
 		"lib": [
 			"es2015"
 		]

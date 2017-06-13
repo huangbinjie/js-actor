@@ -2,7 +2,7 @@ import { EventEmitter } from "events"
 import { AbstractActor } from "./AbstractActor"
 import { ActorRef } from "./ActorRef"
 import { RootActor } from "./RootActor"
-import { v1 } from "uuid"
+import { generate } from "shortid"
 
 
 /** An ActorSystem is a heavyweight structure that will allocate listenner.
@@ -25,7 +25,7 @@ export class ActorSystem {
 	}
 
 	// Create new actor as child of this context and give it an automatically generated name
-	public actorOf(actor: AbstractActor, name = v1()) {
+	public actorOf(actor: AbstractActor, name = generate()) {
 		return this.rootActorRef.getContext().actorOf(actor, name)
 	}
 
