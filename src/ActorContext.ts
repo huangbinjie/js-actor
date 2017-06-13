@@ -13,7 +13,7 @@ export class ActorContext implements IContext {
 	public name: string
 	public self: ActorRef
 	public system: ActorSystem
-	public sender: Optional<ActorRef> = null
+	public sender: ActorRef | null = null
 	public scheduler: Scheduler
 	public parent: ActorRef
 	public path: string
@@ -25,7 +25,7 @@ export class ActorContext implements IContext {
 		return actorRef
 	}
 
-	public child(name: string): Optional<ActorRef> {
+	public child(name: string): ActorRef | null {
 		const child = this._children.get(name)
 		if (!child) {
 			for (let child of this._children.values()) {
@@ -68,7 +68,7 @@ export interface IContext {
 	name: string
 	self: ActorRef,
 	system: ActorSystem,
-	sender: Optional<ActorRef>,
+	sender: ActorRef | null,
 	parent: ActorRef,
 	path: string
 }
