@@ -41,23 +41,20 @@ export class ActorContext implements IContext {
 	}
 	/** stop self from parent, elsewise try to stop child
 	 *  stop should remove listener and delete the referece at children map.
-	 *  this is a recursive operation
+	 *  this is a recursive operation, so give an accurate parent to stop
+	 *  is match better than system.stop()
 	 */
 	public stop(actorRef = this.self) {
 		if (this.self.name === actorRef.name) {
 			this.parent.getContext().stop(actorRef)
 		} else {
-			for (let child of this.children.values()) {
-				if (child.name === actorRef.name) {
-					this.children.delete(actorRef.name)
-					child.getContext().scheduler.cancel()
-					child.getActor().postStop()
-					for (let grandchild of child.getContext().children.values()) {
-						grandchild.getContext().stop()
-					}
-					return
-				}
+			const child = this.children.get(actorRef.name)!
+			child.getContext().scheduler.cancel()
+			child.getActor().postStop()
+			for (let grandchild of child.getContext().children.values()) {
+				grandchild.getContext().stop()
 			}
+			this.children.delete(actorRef.name)
 		}
 	}
 
