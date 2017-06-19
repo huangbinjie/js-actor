@@ -12,9 +12,6 @@
 			"es2015"
 		]
 	},
-	"files": [
-		"typings/index.d.ts"
-	],
 	"include": [
 		"src"
 	],
