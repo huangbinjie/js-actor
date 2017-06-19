@@ -10,14 +10,14 @@ import { generate } from "shortid"
  *  So create one per logical application. 
 */
 export class ActorSystem {
-	private rootActorRef = new ActorRef(new RootActor, this, "root", {} as ActorRef, "/")
+	private readonly rootActorRef = new ActorRef(new RootActor, this, "root", {} as ActorRef, "/")
 
-	public static create(name: string) {
-		return new ActorSystem(name)
+	public static create(name: string, maxListeners = 10) {
+		return new ActorSystem(name, maxListeners)
 	}
 
 	// Main event bus of this actor system, used for example for logging.
-	public readonly eventStream = new EventEmitter()
+	public readonly eventStream: EventEmitter
 
 	// dispatch event to listening actor
 	public dispatch(event: string, message: object) {
@@ -39,7 +39,10 @@ export class ActorSystem {
 		this.rootActorRef.getContext().children.clear()
 	}
 
-	constructor(private name: string) { }
+	constructor(private name: string, private maxListeners = 10) {
+		this.eventStream = new EventEmitter()
+		this.eventStream.setMaxListeners(maxListeners)
+	}
 }
 
 export type Listener<T = object> = {
