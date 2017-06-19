@@ -6,14 +6,13 @@ import { Listener } from "./ActorSystem"
  */
 export class Scheduler {
 	private callback = (value: Object) => {
-
 		for (let listener of this.listeners) {
 			if (listener.message && value instanceof listener.message) return listener.callback(value)
 		}
 
-		const defaultListener = this.listeners.find(listener => !!listener.message)
+		const defaultListener = this.listeners.find(listener => !listener.message)
 
-		if (defaultListener) defaultListener.callback({})
+		if (defaultListener) defaultListener.callback(value)
 	}
 
 	constructor(private eventStream: EventEmitter, private event: string, private listeners: Listener[]) { }

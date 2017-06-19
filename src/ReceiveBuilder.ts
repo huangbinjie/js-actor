@@ -14,7 +14,7 @@ export class ReceiveBuilder {
 		return this
 	}
 
-	public matchAny(callback: Listener["callback"]) {
+	public matchAny(callback: (obj: any) => void) {
 		this.listeners.push({ callback })
 		return this
 	}
