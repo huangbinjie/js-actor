@@ -15,11 +15,11 @@
   "author": "corol",
   "license": "ISC",
   "dependencies": {
+    "@types/node": "^7.0.31",
     "events": "^1.1.1",
     "shortid": "^2.2.8"
   },
   "devDependencies": {
-    "@types/node": "^7.0.31",
     "@types/shortid": "^0.0.29",
     "ava": "^0.19.1",
     "npm-run-all": "^4.0.2"
