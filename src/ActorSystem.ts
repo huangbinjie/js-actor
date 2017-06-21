@@ -29,6 +29,10 @@ export class ActorSystem {
 		return this.rootActorRef.getContext().actorOf(actor, name)
 	}
 
+	public getRoot() {
+		return this.rootActorRef
+	}
+
 	public stop(actorRef: ActorRef) {
 		this.rootActorRef.getContext().stop(actorRef)
 	}
