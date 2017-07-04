@@ -15,7 +15,7 @@ export class ActorContext implements IContext {
 	public self: ActorRef
 	public system: ActorSystem
 	public sender: ActorRef | null = null
-	public scheduler: Scheduler
+	public scheduler?: Scheduler
 	public parent: ActorRef
 	public path: string
 
@@ -50,7 +50,8 @@ export class ActorContext implements IContext {
 			this.parent.getContext().stop(actorRef)
 		} else {
 			const child = this.children.get(actorRef.name)!
-			child.getContext().scheduler.cancel()
+			let sdu = child.getContext().scheduler
+			if (sdu) sdu.cancel()
 			child.getActor().postStop()
 			for (let grandchild of child.getContext().children.values()) {
 				grandchild.getContext().stop()
@@ -64,7 +65,7 @@ export class ActorContext implements IContext {
 	 * @param behavior 
 	 */
 	public become(behavior: Receive) {
-		this.scheduler.cancel()
+		if (this.scheduler) this.scheduler.cancel()
 		const listeners = behavior.getListener()
 		const eventStream = this.system.eventStream
 		this.scheduler = new Scheduler(eventStream, this.name, listeners)
@@ -72,7 +73,7 @@ export class ActorContext implements IContext {
 	}
 
 	public isAlive() {
-		return !this.scheduler.isCancelled()
+		return this.scheduler ? !this.scheduler.isCancelled() : false
 	}
 
 	constructor(initialContext: IContext) {
