@@ -2,6 +2,7 @@ import { ActorSystem } from "./ActorSystem"
 import { ActorRef } from "./ActorRef"
 import { Scheduler } from "./Scheduler"
 import { AbstractActor } from "./AbstractActor"
+import { Receive } from "./Receive"
 import { generate } from "shortid"
 
 /** the Actor context.
@@ -56,6 +57,18 @@ export class ActorContext implements IContext {
 			}
 			this.children.delete(actorRef.name)
 		}
+	}
+
+	/**
+	 * change the Actor's behavior to become the new "Receive" handler.
+	 * @param behavior 
+	 */
+	public become(behavior: Receive) {
+		this.scheduler.cancel()
+		const listeners = behavior.getListener()
+		const eventStream = this.system.eventStream
+		this.scheduler = new Scheduler(eventStream, this.name, listeners)
+		this.scheduler.start()
 	}
 
 	public isAlive() {

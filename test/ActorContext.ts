@@ -1,8 +1,7 @@
 import { test } from "ava"
 import { ActorSystem } from "../src/ActorSystem"
 import { AbstractActor } from "../src/AbstractActor"
-
-const system = new ActorSystem("testSystem")
+import { ReceiveBuilder } from "../src/ReceiveBuilder"
 
 class Self extends AbstractActor {
 	public createReceive() {
@@ -23,11 +22,13 @@ class Grandchild extends AbstractActor {
 }
 
 test("root actor should not listen", t => {
+	const system = new ActorSystem("testSystem")
 	t.is(system.eventStream.eventNames().length, 0)
 })
 
 
 test("stop child should remove all child of the child's listener", t => {
+	const system = new ActorSystem("testSystem")
 	const selfActor = system.actorOf(new Self, "self")
 	const childActor = selfActor.getContext().actorOf(new Child, "child")
 	const grandchild = childActor.getContext().actorOf(new Grandchild, "grandchild")
@@ -37,6 +38,7 @@ test("stop child should remove all child of the child's listener", t => {
 })
 
 test("find grandchild", t => {
+	const system = new ActorSystem("testSystem")
 	const selfActor = system.actorOf(new Self, "self")
 	const childActor = selfActor.getContext().actorOf(new Child, "child")
 	const grandchild = childActor.getContext().actorOf(new Grandchild, "grandchild")
@@ -46,4 +48,18 @@ test("find grandchild", t => {
 	const grandChildContext = grandChildActor.getContext()
 	t.is(grandChildContext.path, "/self/child/grandchild/")
 	t.is(grandChildContext.name, "grandchild")
+})
+
+test("become", t => {
+	const system = new ActorSystem("testSystem")
+	const selfActor = system.actorOf(new Self)
+
+	const behavior = ReceiveBuilder.create().matchAny(({ n }) => t.is(1, n)).build()
+
+	selfActor.getContext().become(behavior)
+
+	selfActor.tell({ n: 1 })
+
+	t.is(system.eventStream.eventNames().length, 1)
+
 })
