@@ -142,6 +142,18 @@ this method can stop self and children actor. it will remove the listener of the
 
 + actorRef. which actor you want to stop.default is stop self.
 
+
+#### become(behavior: Receive): void
+
+change the Actor's behavior to become the new "Receive" handler.eg.
+
+```ts
+// create a new Receive object
+const behavior = ReceiveBuilder.create().build()
+// the actor will drop previous receive object and use new receive
+actor.getContext().become(behavior)
+```
+
 #### isAlive(): boolean
 
 return if the actor is listening.
