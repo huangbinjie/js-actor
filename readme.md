@@ -176,9 +176,10 @@ equal to `this.context.sender`
 
 return `new ReceiveBuilder`
 
-#### abstract createReceive(): Receive
+#### createReceive()?: Receive
 
-this abstract method must be implement.and must return a Receive object. there's a convenient build-in method `receiveBuilder` to help your create an Receive object
+if this method have been implemented, it must return a Receive object. there's a convenient build-in method `receiveBuilder` to help your create an Receive object.
+if this method havn't be implemented, the actor will not listen the ActorSystem.
 
 #### preStart() void
 

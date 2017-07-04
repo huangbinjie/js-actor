@@ -8,6 +8,15 @@ class Entity {
 	constructor(public message: string) { }
 }
 
+
+test("no listen", t => {
+	class TestActor extends AbstractActor { }
+
+	const testActor = system.actorOf(new TestActor)
+
+	t.is(system.eventStream.eventNames().length, 0)
+})
+
 test("match", t => {
 	t.plan(2)
 	class TestActor extends AbstractActor {
@@ -27,3 +36,4 @@ test("match", t => {
 	testActor.tell({ message: "testAny" })
 	testActor.tell(new Entity("test"))
 })
+

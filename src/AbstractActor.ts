@@ -5,19 +5,11 @@ import { Receive } from "./Receive"
 import { Scheduler } from "./Scheduler"
 
 /** 
- * abstract class that should be extended to create self actor
+ * abstract class that should be extended to create your actor
  */
 export abstract class AbstractActor {
-	private _context: ActorContext
-	protected abstract createReceive(): Receive
-
-	public get context() {
-		return this._context
-	}
-
-	public set context(context: ActorContext) {
-		this._context = context
-	}
+	public context: ActorContext
+	protected createReceive?(): Receive
 
 	protected getSelf() {
 		return this.context.self
@@ -28,6 +20,7 @@ export abstract class AbstractActor {
 	}
 
 	public receive() {
+		if (!this.createReceive) return
 		const listeners = this.createReceive().getListener()
 		const eventStream = this.context.system.eventStream
 		this.context.scheduler = new Scheduler(eventStream, this.context.name, listeners)
