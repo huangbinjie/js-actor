@@ -44,6 +44,7 @@ export class ActorContext implements IContext {
 	 *  stop should remove listener and delete the referece at children map.
 	 *  this is a recursive operation, so give an accurate parent to stop
 	 *  is match better than system.stop()
+	 *  @param actorRef
 	 */
 	public stop(actorRef = this.self) {
 		if (this.self.name === actorRef.name) {

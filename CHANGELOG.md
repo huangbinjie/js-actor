@@ -2,7 +2,7 @@
 
 ## 1.0.8
 
-+ add new method to ActorContext.
++ add `become` to ActorContext.
 
 ## 1.0.7
 
