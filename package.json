@@ -1,6 +1,6 @@
 {
   "name": "js-actor",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "main": "bin/index.js",
   "typings": "bin/index.d.ts",
   "description": "javascript actor",
