@@ -62,4 +62,6 @@ test("become", t => {
 
 	t.is(system.eventStream.eventNames().length, 1)
 
+	selfActor.getContext().stop()
+
 })
