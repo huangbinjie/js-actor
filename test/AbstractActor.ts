@@ -37,3 +37,50 @@ test("match", t => {
 	testActor.tell(new Entity("test"))
 })
 
+test("logging every message passthrough system", t => {
+	t.plan(2)
+	class LoggerActor extends AbstractActor {
+		public createReceive() {
+			return this.receiveBuilder()
+				.build()
+		}
+
+		public preStart() {
+			this.context.system.eventStream.on("*", function ({ n }) {
+				t.truthy(n)
+			})
+		}
+
+		public postStop() {
+			// stop listener
+		}
+	}
+
+	const logger = system.actorOf(new LoggerActor, "logger")
+	system.dispatch("anyMessage", { n: 1 })
+	system.dispatch("logger", { n: 2 })
+})
+
+test("logging self message", t => {
+	t.plan(1)
+	class LoggerActor extends AbstractActor {
+		public createReceive() {
+			return this.receiveBuilder()
+				.build()
+		}
+
+		public preStart() {
+			this.context.system.eventStream.on(this.context.name, function ({ n }) {
+				t.is(n, 2)
+			})
+		}
+
+		public postStop() {
+			// stop listener
+		}
+	}
+
+	const logger = system.actorOf(new LoggerActor, "logger")
+	system.dispatch("anyMessage", { n: 1 })
+	system.dispatch("logger", { n: 2 })
+})

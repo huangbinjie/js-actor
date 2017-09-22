@@ -1,4 +1,4 @@
-import { EventEmitter } from "events"
+import { EventEmitter2 } from "eventemitter2"
 import { AbstractActor } from "./AbstractActor"
 import { ActorRef } from "./ActorRef"
 import { RootActor } from "./RootActor"
@@ -17,7 +17,7 @@ export class ActorSystem {
 	}
 
 	// Main event bus of this actor system, used for example for logging.
-	public readonly eventStream: EventEmitter
+	public readonly eventStream: EventEmitter2
 
 	// dispatch event to listening actor
 	public dispatch(event: string, message: object) {
@@ -44,8 +44,11 @@ export class ActorSystem {
 	}
 
 	constructor(private name: string, private maxListeners = 10) {
-		this.eventStream = new EventEmitter()
-		this.eventStream.setMaxListeners(maxListeners)
+		this.eventStream = new EventEmitter2({
+			wildcard: true,
+			verboseMemoryLeak: true,
+			maxListeners
+		})
 	}
 }
 

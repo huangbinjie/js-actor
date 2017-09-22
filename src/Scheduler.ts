@@ -1,4 +1,4 @@
-import { EventEmitter } from "events"
+import { EventEmitter2 } from "eventemitter2"
 import { Listener } from "./ActorSystem"
 
 /** a schedule service to listen current system's event stream
@@ -15,7 +15,7 @@ export class Scheduler {
 		if (defaultListener) defaultListener.callback(value)
 	}
 
-	constructor(private eventStream: EventEmitter, private event: string, private listeners: Listener[]) { }
+	constructor(private eventStream: EventEmitter2, private event: string, private listeners: Listener[]) { }
 
 	public cancel() {
 		try {
