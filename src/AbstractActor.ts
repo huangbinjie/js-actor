@@ -23,7 +23,7 @@ export abstract class AbstractActor {
 		if (!this.createReceive) return
 		const listeners = this.createReceive().getListener()
 		const eventStream = this.context.system.eventStream
-		this.context.scheduler = new Scheduler(eventStream, this.context.name, listeners)
+		this.context.scheduler = new Scheduler(eventStream, this.context.name, listeners, this)
 		this.context.scheduler.start()
 		this.preStart()
 	}
@@ -40,6 +40,11 @@ export abstract class AbstractActor {
 	/** is called after getContext().stop() is invoked */
 	public postStop() {
 
+	}
+
+	/** is called after Receive got error */
+	public postError(err: Error) {
+		throw err
 	}
 
 }

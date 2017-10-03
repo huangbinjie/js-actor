@@ -69,7 +69,7 @@ export class ActorContext implements IContext {
 		if (this.scheduler) this.scheduler.cancel()
 		const listeners = behavior.getListener()
 		const eventStream = this.system.eventStream
-		this.scheduler = new Scheduler(eventStream, this.name, listeners)
+		this.scheduler = new Scheduler(eventStream, this.name, listeners, this.self.getActor())
 		this.scheduler.start()
 	}
 

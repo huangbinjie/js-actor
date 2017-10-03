@@ -1,28 +1,31 @@
 import { EventEmitter2 } from "eventemitter2"
 import { Listener } from "./ActorSystem"
+import { AbstractActor } from "./AbstractActor"
 
 /** a schedule service to listen current system's event stream
  *  for performance perspective，current implemantation all listen system, not listen actor respective
  */
 export class Scheduler {
+	private defaultListener?: Listener
 	private callback = (value: Object) => {
-		for (let listener of this.listeners) {
-			if (listener.message && value instanceof listener.message) return listener.callback(value)
+		const listener = this.listeners.find(listener => !!listener.message && value instanceof listener.message)
+		try {
+			if (listener) {
+				return listener.callback(value)
+			}
+			return this.defaultListener && this.defaultListener.callback(value)
+		} catch (e) {
+			this.owner.postError(e)
 		}
 
-		const defaultListener = this.listeners.find(listener => !listener.message)
-
-		if (defaultListener) defaultListener.callback(value)
 	}
 
-	constructor(private eventStream: EventEmitter2, private event: string, private listeners: Listener[]) { }
+	constructor(private eventStream: EventEmitter2, private event: string, private listeners: Listener[], private owner: AbstractActor) {
+		this.defaultListener = this.listeners.find(listener => !listener.message)
+	}
 
 	public cancel() {
-		try {
-			this.eventStream.removeListener(this.event, this.callback)
-		} catch (e) {
-			return false
-		}
+		this.eventStream.removeListener(this.event, this.callback)
 		return true
 	}
 
