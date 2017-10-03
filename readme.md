@@ -201,6 +201,10 @@ is called when actor is started
 
 is called after `ActorContext.stop()` is invoked
 
+#### postError(e: Error) void
+
+is called after `Receive` got error. default rise error.
+
 ### ActorRef
 
 handle reference to an actor, whitch may reside on an actor.

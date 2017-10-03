@@ -84,3 +84,22 @@ test("logging self message", t => {
 	system.dispatch("anyMessage", { n: 1 })
 	system.dispatch("logger", { n: 2 })
 })
+
+test("catch error message", t => {
+	class CatchActor extends AbstractActor {
+		public createReceive() {
+			return this.receiveBuilder()
+				.match(Entity, message => { throw Error("some error") })
+				.matchAny(({ n }) => t.is(n, 1))
+				.build()
+		}
+
+		public postError(e: Error) {
+			t.is(e.message, "some error")
+		}
+	}
+
+	const catchActor = system.actorOf(new CatchActor, "catchActor")
+	catchActor.tell(new Entity("hello"))
+	catchActor.tell({ n: 1 })	
+})

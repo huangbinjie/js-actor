@@ -43,7 +43,7 @@ test("find grandchild", t => {
 	const childActor = selfActor.getContext().actorOf(new Child, "child")
 	const grandchild = childActor.getContext().actorOf(new Grandchild, "grandchild")
 
-	const grandChildActor = selfActor.getContext().child("grandchild")
+	const grandChildActor = selfActor.getContext().child("grandchild")!
 	t.truthy(grandChildActor)
 	const grandChildContext = grandChildActor.getContext()
 	t.is(grandChildContext.path, "/self/child/grandchild/")
