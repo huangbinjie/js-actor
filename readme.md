@@ -64,7 +64,7 @@ create an ActorSystem. Is equal to `new ActorSystem(name: string, maxListeners: 
 
 the event stream of the ActorSystem. All actor should listen it.
 
-#### dispatch(event: string, message: object): void
+#### tell(event: string, message: object): void
 
 call emit on eventStream
 

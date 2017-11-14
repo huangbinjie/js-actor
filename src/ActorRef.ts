@@ -34,7 +34,7 @@ export class ActorRef {
 
 	public tell(message: object, sender?: ActorRef) {
 		this.actor.context.sender = sender || null
-		
-		this.system.dispatch(this.name, message)
+
+		this.system.tell(this.name, message)
 	}
 }

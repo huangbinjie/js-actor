@@ -57,8 +57,8 @@ test("logging every message passthrough system", t => {
 	}
 
 	const logger = system.actorOf(new LoggerActor, "logger")
-	system.dispatch("anyMessage", { n: 1 })
-	system.dispatch("logger", { n: 2 })
+	system.tell("anyMessage", { n: 1 })
+	system.tell("logger", { n: 2 })
 })
 
 test("logging self message", t => {
@@ -81,8 +81,8 @@ test("logging self message", t => {
 	}
 
 	const logger = system.actorOf(new LoggerActor, "logger")
-	system.dispatch("anyMessage", { n: 1 })
-	system.dispatch("logger", { n: 2 })
+	system.tell("anyMessage", { n: 1 })
+	system.tell("logger", { n: 2 })
 })
 
 test("catch error message", t => {
@@ -101,5 +101,5 @@ test("catch error message", t => {
 
 	const catchActor = system.actorOf(new CatchActor, "catchActor")
 	catchActor.tell(new Entity("hello"))
-	catchActor.tell({ n: 1 })	
+	catchActor.tell({ n: 1 })
 })

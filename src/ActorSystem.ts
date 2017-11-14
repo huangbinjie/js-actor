@@ -20,7 +20,7 @@ export class ActorSystem {
 	public readonly eventStream: EventEmitter2
 
 	// dispatch event to listening actor
-	public dispatch(event: string, message: object) {
+	public tell(event: string, message: object) {
 		this.eventStream.emit(event, message)
 	}
 
