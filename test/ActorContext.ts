@@ -66,3 +66,30 @@ test("become", t => {
 	selfActor.getContext().stop()
 
 })
+
+test("change the behavior of self while self is living", t => {
+	t.plan(2)
+	class ChangeBehavior { }
+	class NewBehavior { }
+	const system = new ActorSystem("testSystem")
+
+	class BahaviorActor extends AbstractActor {
+		public createReceive() {
+			return this.receiveBuilder()
+				.match(ChangeBehavior, () => {
+					t.pass()
+					const newBehavior = this.receiveBuilder().match(NewBehavior, () => t.pass()).build()
+					this.context.become(newBehavior)
+				})
+				.build()
+		}
+	}
+
+	const behaviorActor = system.actorOf(new BahaviorActor)
+	behaviorActor.tell(new ChangeBehavior)
+	behaviorActor.tell(new ChangeBehavior)
+	behaviorActor.tell(new NewBehavior)
+	behaviorActor.tell(new ChangeBehavior)
+
+	system.terminal()
+})
