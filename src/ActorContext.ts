@@ -11,13 +11,15 @@ import { generate } from "shortid"
 export class ActorContext implements IContext {
 	private _children = new Map<string, ActorRef>()
 
-	public name: string
-	public self: ActorRef
-	public system: ActorSystem
-	public sender: ActorRef | null = null
-	public scheduler?: Scheduler
-	public parent: ActorRef
-	public path: string
+	constructor(
+		public name: string,
+		public self: ActorRef,
+		public system: ActorSystem,
+		public sender: ActorRef | null,
+		public scheduler: Scheduler | null,
+		public parent: ActorRef,
+		public path: string,
+	) { }
 
 	public actorOf(actor: AbstractActor, name = generate()) {
 		const actorRef = new ActorRef(actor, this.system, name, this.self, this.path + name + "/")
@@ -75,10 +77,6 @@ export class ActorContext implements IContext {
 
 	public isAlive() {
 		return this.scheduler ? !this.scheduler.isCancelled() : false
-	}
-
-	constructor(initialContext: IContext) {
-		Object.assign(this, initialContext)
 	}
 }
 

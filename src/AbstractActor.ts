@@ -8,7 +8,7 @@ import { Scheduler } from "./Scheduler"
  * abstract class that should be extended to create your actor
  */
 export abstract class AbstractActor {
-	public context: ActorContext
+	public context!: ActorContext
 	protected createReceive?(): Receive
 
 	protected getSelf() {

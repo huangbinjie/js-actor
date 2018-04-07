@@ -12,14 +12,7 @@ export class ActorRef {
 		parent: ActorRef,
 		path: string
 	) {
-		this.context = new ActorContext({
-			name,
-			self: this,
-			sender: null,
-			system,
-			parent,
-			path
-		})
+		this.context = new ActorContext(name, this, system, null, null, parent, path)
 
 		actor.context = this.context
 	}

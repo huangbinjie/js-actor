@@ -8,6 +8,10 @@ class Entity {
 	constructor(public message: string) { }
 }
 
+class Entity1 {
+	constructor(public message: string) { }
+}
+
 
 test("no listen", t => {
 	class TestActor extends AbstractActor { }
@@ -18,11 +22,14 @@ test("no listen", t => {
 })
 
 test("match", t => {
-	t.plan(2)
+	t.plan(3)
 	class TestActor extends AbstractActor {
 		public createReceive() {
 			return this.receiveBuilder()
 				.match(Entity, entity => {
+					t.is("test", entity.message)
+				})
+				.matchArray([Entity, Entity1], entity => {
 					t.is("test", entity.message)
 				})
 				.matchAny(obj => {
@@ -35,7 +42,9 @@ test("match", t => {
 	const testActor = system.actorOf(new TestActor)
 	testActor.tell({ message: "testAny" })
 	testActor.tell(new Entity("test"))
+	testActor.tell(new Entity1("test"))
 })
+
 
 test("logging every message passthrough system", t => {
 	t.plan(2)
