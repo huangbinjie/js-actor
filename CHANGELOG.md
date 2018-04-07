@@ -1,5 +1,10 @@
 # changelog
 
+## 1.1.2
+
++ fixed the type error of TypeScript 2.8
++ add matchArray for ReceiveBuilder
+
 ## 1.1.1
 
 + rename system.dispatch to system.tell
