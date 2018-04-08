@@ -39,4 +39,4 @@ export class ReceiveBuilder {
 	}
 }
 
-type Message<T> = new (...args: any[]) => T
+export type Message<T> = new (...args: any[]) => T
