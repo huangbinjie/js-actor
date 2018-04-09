@@ -29,7 +29,7 @@ test("match", t => {
 				.match(Entity, entity => {
 					t.is("test", entity.message)
 				})
-				.matchArray([Entity, Entity1], entity => {
+				.match([Entity1], entity => {
 					t.is("test", entity.message)
 				})
 				.matchAny(obj => {
