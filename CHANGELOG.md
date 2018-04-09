@@ -1,5 +1,10 @@
 # changelog
 
+## 1.1.3
+
++ remove matchArray
++ match method can be pass array now.
+
 ## 1.1.2
 
 + fixed the type error of TypeScript 2.8
