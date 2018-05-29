@@ -12,8 +12,8 @@ import { generate } from "shortid"
 export class ActorSystem {
 	private readonly rootActorRef = new ActorRef(new RootActor, this, "root", {} as ActorRef, "/")
 
-	public static create(name: string, maxListeners = 10) {
-		return new ActorSystem(name, maxListeners)
+	public static create(name: string) {
+		return new ActorSystem(name)
 	}
 
 	// Main event bus of this actor system, used for example for logging.
@@ -43,11 +43,10 @@ export class ActorSystem {
 		this.rootActorRef.getContext().children.clear()
 	}
 
-	constructor(private name: string, private maxListeners = 10) {
+	constructor(private name: string) {
 		this.eventStream = new EventEmitter2({
 			wildcard: true,
-			verboseMemoryLeak: true,
-			maxListeners
+			verboseMemoryLeak: true
 		})
 	}
 }

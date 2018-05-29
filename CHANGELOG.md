@@ -1,5 +1,10 @@
 # changelog
 
+## 1.1.4
+
++ drop `maxListeners`.
++ Refactor Scheduler in order to be extended.
+
 ## 1.1.3
 
 + remove matchArray

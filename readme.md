@@ -53,12 +53,11 @@ hello~
 
 ActorSystem is a heavyweight structure that theoretically should allocate thread, but in js just allocate listener. imagine your computing unit as a realword actor, the ActorSystem is the stage that give the all actor to work upon it. all actor listen ActorSystem. so create on for per logic application.
 
-#### create(name: string, maxListeners: number): ActorSystem
+#### create(name: string): ActorSystem
 
-create an ActorSystem. Is equal to `new ActorSystem(name: string, maxListeners: number)`.
+create an ActorSystem. Equal to `new ActorSystem(name: string)`.
 
 + name. ActorSystem's name. in some scene will make sense.
-+ maxListeners. limit ActorSystem's listener by useing `events` api `setMaxListeners`
 
 #### eventStream: EventEmitter
 

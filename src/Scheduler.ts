@@ -6,8 +6,8 @@ import { AbstractActor } from "./AbstractActor"
  *  for performance perspective，current implemantation all listen system, not listen actor respective
  */
 export class Scheduler {
-	private defaultListener?: Listener
-	private callback = (value: Object) => {
+	protected defaultListener?: Listener
+	protected callback = (value: Object) => {
 		const listener = this.listeners.find(listener => !!listener.message && value instanceof listener.message)
 		try {
 			if (listener) {
@@ -20,7 +20,7 @@ export class Scheduler {
 
 	}
 
-	constructor(private eventStream: EventEmitter2, private event: string, private listeners: Listener[], private owner: AbstractActor) {
+	constructor(protected eventStream: EventEmitter2, protected event: string, protected listeners: Listener[], protected owner: AbstractActor) {
 		this.defaultListener = this.listeners.find(listener => !listener.message)
 	}
 
