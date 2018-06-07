@@ -112,3 +112,30 @@ test("catch error message", t => {
 	catchActor.tell(new Entity("hello"))
 	catchActor.tell({ n: 1 })
 })
+
+
+test("emit all", t => {
+	t.plan(2)
+	const system = new ActorSystem("testSystem")
+
+	class A1 extends AbstractActor {
+		public createReceive() {
+			return this.receiveBuilder()
+				.match(Entity, entity => t.is(entity.message, "1"))
+				.build()
+		}
+	}
+
+	class A2 extends AbstractActor {
+		public createReceive() {
+			return this.receiveBuilder()
+				.match(Entity, entity => t.is(entity.message, "1"))
+				.build()
+		}
+	}
+
+	system.actorOf(new A1)
+	system.actorOf(new A2)
+
+	system.eventStream.emit("*", new Entity("1"))
+})
