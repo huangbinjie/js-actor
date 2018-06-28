@@ -1,13 +1,24 @@
 import { EventEmitter2 } from "eventemitter2"
-import { Listener } from "./ActorSystem"
 import { AbstractActor } from "./AbstractActor"
+import { Listener } from "./interfaces/Listener"
+import { IActorScheduler } from "./interfaces/IActorScheduler"
 
 /** a schedule service to listen current system's event stream
  *  for performance perspective，current implemantation all listen system, not listen actor respective
  */
-export class Scheduler {
+export class ActorScheduler implements IActorScheduler {
 	protected defaultListener?: Listener
-	protected callback = (value: Object) => {
+
+	constructor(
+		protected eventStream: EventEmitter2,
+		protected event: string,
+		protected listeners: Listener[],
+		protected owner: AbstractActor
+	) {
+		this.defaultListener = this.listeners.find(listener => !listener.message)
+	}
+
+	public callback = (value: Object) => {
 		const listener = this.listeners.find(listener => !!listener.message && value instanceof listener.message)
 		try {
 			if (listener) {
@@ -18,10 +29,6 @@ export class Scheduler {
 			this.owner.postError(e)
 		}
 
-	}
-
-	constructor(protected eventStream: EventEmitter2, protected event: string, protected listeners: Listener[], protected owner: AbstractActor) {
-		this.defaultListener = this.listeners.find(listener => !listener.message)
 	}
 
 	public cancel() {
@@ -44,5 +51,10 @@ export class Scheduler {
 
 	public start() {
 		this.eventStream.addListener(this.event, this.callback)
+	}
+
+	public replaceListeners(listeners: Listener[]) {
+		this.listeners = listeners
+		this.defaultListener = this.listeners.find(listener => !listener.message)
 	}
 }

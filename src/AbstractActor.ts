@@ -1,15 +1,16 @@
 import { ActorContext } from "./ActorContext"
 import { ActorRef } from "./ActorRef"
-import { ReceiveBuilder } from "./ReceiveBuilder"
-import { Receive } from "./Receive"
-import { Scheduler } from "./Scheduler"
+import { IActorReceive } from "./interfaces/IActorReceive"
+import { ActorReceiveBuilder } from "./ActorReceiveBuilder"
+import { ActorScheduler } from "./ActorScheduler"
 
 /** 
  * abstract class that should be extended to create your actor
  */
 export abstract class AbstractActor {
 	public context!: ActorContext
-	protected createReceive?(): Receive
+
+	protected abstract createReceive(): IActorReceive
 
 	protected getSelf() {
 		return this.context.self
@@ -19,17 +20,16 @@ export abstract class AbstractActor {
 		return this.context.sender
 	}
 
-	public receive() {
-		if (!this.createReceive) return
-		const listeners = this.createReceive().getListener()
-		const eventStream = this.context.system.eventStream
-		this.context.scheduler = new Scheduler(eventStream, this.context.name, listeners, this)
-		this.context.scheduler.start()
-		this.preStart()
+	protected receiveBuilder() {
+		return ActorReceiveBuilder.create()
 	}
 
-	protected receiveBuilder() {
-		return ReceiveBuilder.create()
+	public receive() {
+		const listeners = this.createReceive().listeners
+		const eventStream = this.context.system.eventStream
+		this.context.scheduler = new ActorScheduler(eventStream, this.context.name, listeners, this)
+		this.context.scheduler.start()
+		this.preStart()
 	}
 
 	/** is called when actor is started*/

@@ -1,7 +1,9 @@
 import { AbstractActor } from "./AbstractActor"
-import { Receive } from "./Receive"
+import { IActorReceive } from ".";
 
 /** the root of the created system actor tree */
 export class RootActor extends AbstractActor {
-
+  public createReceive(): IActorReceive {
+    return this.receiveBuilder().build()
+  }
 }

@@ -1,7 +1,7 @@
 import { test } from "ava"
 import { ActorSystem } from "../src/ActorSystem"
 import { AbstractActor } from "../src/AbstractActor"
-import { ReceiveBuilder } from "../src/ReceiveBuilder"
+import { ActorReceiveBuilder } from "../src/ActorReceiveBuilder"
 
 class Self extends AbstractActor {
 	public createReceive() {
@@ -54,12 +54,11 @@ test("become", t => {
 	const system = new ActorSystem("testSystem")
 	const selfActor = system.actorOf(new Self)
 
-	const behavior = ReceiveBuilder.create().matchAny(({ n }) => t.is(1, n)).build()
+	const behavior = ActorReceiveBuilder.create().matchAny(({ n }) => t.is(1, n)).build()
 
 	selfActor.getContext().become(behavior)
 
 	selfActor.tell({ n: 1 })
-
 	// eventemitter2's bug, eventNames() does not work with wildcard
 	// t.is(system.eventStream.eventNames().length, 1)
 

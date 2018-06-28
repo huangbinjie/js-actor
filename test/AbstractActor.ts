@@ -12,9 +12,14 @@ class Entity1 {
 	constructor(public message: string) { }
 }
 
+class TestActor extends AbstractActor {
+	createReceive() {
+		return this.receiveBuilder().build()
+	}
+}
+
 
 test("no listen", t => {
-	class TestActor extends AbstractActor { }
 
 	const testActor = system.actorOf(new TestActor)
 

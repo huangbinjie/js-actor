@@ -1,37 +1,39 @@
 import { ActorSystem } from "./ActorSystem"
 import { ActorRef } from "./ActorRef"
-import { Scheduler } from "./Scheduler"
+import { ActorScheduler } from "./ActorScheduler"
 import { AbstractActor } from "./AbstractActor"
-import { Receive } from "./Receive"
+import { ActorReceive } from "./ActorReceive"
+import { IActorContext } from "./interfaces/IActorContext"
 import { generate } from "shortid"
+import { IActorScheduler } from "./interfaces/IActorScheduler";
 
 /** the Actor context.
  *  Exposes contextual information for the actor
  */
-export class ActorContext implements IContext {
-	private _children = new Map<string, ActorRef>()
+export class ActorContext implements IActorContext {
+	public children = new Map<string, ActorRef>()
 
 	constructor(
 		public name: string,
 		public self: ActorRef,
 		public system: ActorSystem,
 		public sender: ActorRef | null,
-		public scheduler: Scheduler | null,
+		public scheduler: IActorScheduler,
 		public parent: ActorRef,
 		public path: string,
 	) { }
 
 	public actorOf(actor: AbstractActor, name = generate()) {
-		const actorRef = new ActorRef(actor, this.system, name, this.self, this.path + name + "/")
-		this._children.set(name, actorRef)
+		const actorRef = new ActorRef(actor, this.system, [], this.self, this.path + name + "/", name)
+		this.children.set(name, actorRef)
 		actor.receive()
 		return actorRef
 	}
 
 	public child(name: string): ActorRef | null {
-		const child = this._children.get(name)
+		const child = this.children.get(name)
 		if (!child) {
-			for (let child of this._children.values()) {
+			for (let child of this.children.values()) {
 				const targetActor = child.getContext().child(name)
 				if (targetActor) return targetActor
 			}
@@ -39,9 +41,6 @@ export class ActorContext implements IContext {
 		return child || null
 	}
 
-	public get children() {
-		return this._children
-	}
 	/** stop self from parent, elsewise try to stop child
 	 *  stop should remove listener and delete the referece at children map.
 	 *  this is a recursive operation, so give an accurate parent to stop
@@ -67,24 +66,14 @@ export class ActorContext implements IContext {
 	 * change the Actor's behavior to become the new "Receive" handler.
 	 * @param behavior 
 	 */
-	public become(behavior: Receive) {
-		if (this.scheduler) this.scheduler.cancel()
-		const listeners = behavior.getListener()
-		const eventStream = this.system.eventStream
-		this.scheduler = new Scheduler(eventStream, this.name, listeners, this.self.getActor())
+	public become(behavior: ActorReceive) {
+		this.scheduler.cancel()
+		const listeners = behavior.listeners
+		this.scheduler.replaceListeners(listeners)
 		this.scheduler.start()
 	}
 
 	public isAlive() {
 		return this.scheduler ? !this.scheduler.isCancelled() : false
 	}
-}
-
-export interface IContext {
-	name: string
-	self: ActorRef,
-	system: ActorSystem,
-	sender: ActorRef | null,
-	parent: ActorRef,
-	path: string
 }

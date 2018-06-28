@@ -10,7 +10,7 @@ import { generate } from "shortid"
  *  So create one per logical application. 
 */
 export class ActorSystem {
-	private readonly rootActorRef = new ActorRef(new RootActor, this, "root", {} as ActorRef, "/")
+	private readonly rootActorRef = new ActorRef(new RootActor, this, [], {} as ActorRef, "/", "root")
 
 	public static create(name: string) {
 		return new ActorSystem(name)
@@ -49,9 +49,4 @@ export class ActorSystem {
 			verboseMemoryLeak: true
 		})
 	}
-}
-
-export type Listener<T = object> = {
-	message?: new (...args: any[]) => T
-	callback: (value: T) => void
 }
