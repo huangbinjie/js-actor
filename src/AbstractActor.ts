@@ -3,6 +3,7 @@ import { ActorRef } from "./ActorRef"
 import { IActorReceive } from "./interfaces/IActorReceive"
 import { ActorReceiveBuilder } from "./ActorReceiveBuilder"
 import { ActorScheduler } from "./ActorScheduler"
+import { IActorReceiveBuilder } from "."
 
 /** 
  * abstract class that should be extended to create your actor
@@ -20,7 +21,7 @@ export abstract class AbstractActor {
 		return this.context.sender
 	}
 
-	protected receiveBuilder() {
+	protected receiveBuilder(): IActorReceiveBuilder {
 		return ActorReceiveBuilder.create()
 	}
 
