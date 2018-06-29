@@ -1,7 +1,10 @@
 // interface
+export { IActorContext } from "./interfaces/IActorContext"
 export { IActorReceiveBuilder } from "./interfaces/IActorReceiveBuilder"
 export { IActorReceive } from "./interfaces/IActorReceive"
 export { IActorScheduler } from "./interfaces/IActorScheduler"
+export { Listener } from "./interfaces/Listener"
+export { Message } from "./interfaces/Message"
 // impl
 export { AbstractActor } from "./AbstractActor"
 export { ActorContext } from "./ActorContext"

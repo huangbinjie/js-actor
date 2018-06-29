@@ -1,4 +1,6 @@
+import { Message } from "./Message";
+
 export type Listener<T = object> = {
-  message?: new (...args: any[]) => T
-  callback: (value: T) => void
+  message?: Message<T>
+  callback: (value: any) => any
 }
