@@ -1,5 +1,13 @@
 # changelog
 
+## 1.1.9
+
++ add the type parameter to callback argument inside `IActorReceiveBuilder`.
+
+## 1.1.8
+
++ refactor: extract base interface in order to implements.
+
 ## 1.1.4
 
 + drop `maxListeners`.
