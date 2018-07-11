@@ -24,7 +24,7 @@ export class ActorContext implements IActorContext {
 	) { }
 
 	public actorOf(actor: AbstractActor, name = generate()) {
-		const actorRef = new ActorRef(actor, this.system, [], this.self, this.path + name + "/", name)
+		const actorRef = new ActorRef(actor, this.system, [], this.self, this.path + "/" + name, name)
 		this.children.set(name, actorRef)
 		actor.receive()
 		return actorRef
@@ -34,7 +34,7 @@ export class ActorContext implements IActorContext {
 		const child = this.children.get(name)
 		if (!child) {
 			for (let child of this.children.values()) {
-				const targetActor = child.getContext().child(name)
+				const targetActor = child.getActor().context.child(name)
 				if (targetActor) return targetActor
 			}
 		}
@@ -48,17 +48,18 @@ export class ActorContext implements IActorContext {
 	 *  @param actorRef
 	 */
 	public stop(actorRef = this.self) {
-		if (this.self.name === actorRef.name) {
-			this.parent.getContext().stop(actorRef)
+		const context = actorRef.getActor().context
+		if (this.self.getActor().context.path === context.path) {
+			this.parent.getActor().context.stop(actorRef)
 		} else {
-			const child = this.children.get(actorRef.name)!
-			let sdu = child.getContext().scheduler
-			if (sdu) sdu.cancel()
+			const child = this.children.get(context.name)!
+			let sdu = child.getActor().context.scheduler
+			sdu.cancel()
 			child.getActor().postStop()
-			for (let grandchild of child.getContext().children.values()) {
-				grandchild.getContext().stop()
+			for (let grandchild of child.getActor().context.children.values()) {
+				grandchild.getActor().context.stop()
 			}
-			this.children.delete(actorRef.name)
+			this.children.delete(context.name)
 		}
 	}
 

@@ -6,24 +6,19 @@ import { Listener } from "./interfaces/Listener";
 
 /** handle reference to an actor, whitch may reside on an actor or root actor */
 export class ActorRef {
-	private context: ActorContext
 	constructor(
 		private actor: AbstractActor,
-		private system: ActorSystem,
-		private listeners: Listener[],
-		private parent: ActorRef,
-		private path: string,
-		public name: string,
+		system: ActorSystem,
+		listeners: Listener[],
+		parent: ActorRef,
+		path: string,
+		name: string,
 	) {
 		// create a default scheduler, the actural scheduler will be set in actor.receive()
-		const scheduler = new ActorScheduler(system.eventStream, name, listeners, actor)
-		this.context = new ActorContext(name, this, system, null, scheduler, parent, path)
+		const scheduler = new ActorScheduler(system.eventStream, path, listeners, actor)
+		const context = new ActorContext(name, this, system, null, scheduler, parent, path)
 
-		actor.context = this.context
-	}
-
-	public getContext() {
-		return this.context
+		actor.context = context
 	}
 
 	public getActor() {
@@ -32,7 +27,6 @@ export class ActorRef {
 
 	public tell(message: object, sender?: ActorRef) {
 		this.actor.context.sender = sender || null
-
-		this.system.tell(this.name, message)
+		this.actor.context.scheduler.callback(message)
 	}
 }

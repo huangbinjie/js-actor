@@ -50,6 +50,29 @@ test("match", t => {
 	testActor.tell(new Entity1("test"))
 })
 
+test("tell should not go through system.eventStream", t => {
+	t.plan(2)
+	class LoggerActor extends AbstractActor {
+		public createReceive() {
+			return this.receiveBuilder()
+				.match(Entity, entity => t.is(entity.message, "1"))
+				.matchAny(obj => t.is(obj.n, 1))
+				.build()
+		}
+
+		public preStart() {
+			this.context.system.eventStream.on("*", function ({ n }) {
+				// should not pass
+				t.pass()
+			})
+		}
+	}
+
+	const logger = system.actorOf(new LoggerActor, "logger")
+	logger.tell({ n: 1 })
+	logger.tell(new Entity("1"))
+})
+
 
 test("logging every message passthrough system", t => {
 	t.plan(2)
@@ -72,7 +95,7 @@ test("logging every message passthrough system", t => {
 
 	const logger = system.actorOf(new LoggerActor, "logger")
 	system.tell("anyMessage", { n: 1 })
-	system.tell("logger", { n: 2 })
+	system.tell("root/logger", { n: 2 })
 })
 
 test("logging self message", t => {
@@ -84,7 +107,7 @@ test("logging self message", t => {
 		}
 
 		public preStart() {
-			this.context.system.eventStream.on(this.context.name, function ({ n }) {
+			this.context.system.eventStream.on(this.context.path, function ({ n }) {
 				t.is(n, 2)
 			})
 		}
@@ -95,8 +118,8 @@ test("logging self message", t => {
 	}
 
 	const logger = system.actorOf(new LoggerActor, "logger")
-	system.tell("anyMessage", { n: 1 })
-	system.tell("logger", { n: 2 })
+	system.tell("root/anyMessage", { n: 1 })
+	system.tell("root/logger", { n: 2 })
 })
 
 test("catch error message", t => {
@@ -116,31 +139,4 @@ test("catch error message", t => {
 	const catchActor = system.actorOf(new CatchActor, "catchActor")
 	catchActor.tell(new Entity("hello"))
 	catchActor.tell({ n: 1 })
-})
-
-
-test("emit all", t => {
-	t.plan(2)
-	const system = new ActorSystem("testSystem")
-
-	class A1 extends AbstractActor {
-		public createReceive() {
-			return this.receiveBuilder()
-				.match(Entity, entity => t.is(entity.message, "1"))
-				.build()
-		}
-	}
-
-	class A2 extends AbstractActor {
-		public createReceive() {
-			return this.receiveBuilder()
-				.match(Entity, entity => t.is(entity.message, "1"))
-				.build()
-		}
-	}
-
-	system.actorOf(new A1)
-	system.actorOf(new A2)
-
-	system.eventStream.emit("*", new Entity("1"))
 })

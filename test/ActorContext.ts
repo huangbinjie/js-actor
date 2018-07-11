@@ -30,23 +30,23 @@ test("root actor should not listen", t => {
 test("stop child should remove all child of the child's listener", t => {
 	const system = new ActorSystem("testSystem")
 	const selfActor = system.actorOf(new Self, "self")
-	const childActor = selfActor.getContext().actorOf(new Child, "child")
-	const grandchild = childActor.getContext().actorOf(new Grandchild, "grandchild")
+	const childActor = selfActor.getActor().context.actorOf(new Child, "child")
+	const grandchild = childActor.getActor().context.actorOf(new Grandchild, "grandchild")
 	system.stop(selfActor)
 	t.is(system.eventStream.eventNames().length, 0)
-	t.is((system as any).rootActorRef.getContext().children.size, 0)
+	t.is(system.getRoot().getActor().context.children.size, 0)
 })
 
 test("find grandchild", t => {
 	const system = new ActorSystem("testSystem")
 	const selfActor = system.actorOf(new Self, "self")
-	const childActor = selfActor.getContext().actorOf(new Child, "child")
-	const grandchild = childActor.getContext().actorOf(new Grandchild, "grandchild")
+	const childActor = selfActor.getActor().context.actorOf(new Child, "child")
+	const grandchild = childActor.getActor().context.actorOf(new Grandchild, "grandchild")
 
-	const grandChildActor = selfActor.getContext().child("grandchild")!
+	const grandChildActor = selfActor.getActor().context.child("grandchild")!
 	t.truthy(grandChildActor)
-	const grandChildContext = grandChildActor.getContext()
-	t.is(grandChildContext.path, "/self/child/grandchild/")
+	const grandChildContext = grandChildActor.getActor().context
+	t.is(grandChildContext.path, "root/self/child/grandchild")
 	t.is(grandChildContext.name, "grandchild")
 })
 
@@ -56,13 +56,11 @@ test("become", t => {
 
 	const behavior = ActorReceiveBuilder.create().matchAny(({ n }) => t.is(1, n)).build()
 
-	selfActor.getContext().become(behavior)
+	selfActor.getActor().context.become(behavior)
 
 	selfActor.tell({ n: 1 })
-	// eventemitter2's bug, eventNames() does not work with wildcard
-	// t.is(system.eventStream.eventNames().length, 1)
 
-	selfActor.getContext().stop()
+	selfActor.getActor().context.stop()
 
 })
 

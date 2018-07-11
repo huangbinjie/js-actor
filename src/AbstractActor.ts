@@ -27,8 +27,7 @@ export abstract class AbstractActor {
 
 	public receive() {
 		const listeners = this.createReceive().listeners
-		const eventStream = this.context.system.eventStream
-		this.context.scheduler = new ActorScheduler(eventStream, this.context.name, listeners, this)
+		this.context.scheduler.replaceListeners(listeners)
 		this.context.scheduler.start()
 		this.preStart()
 	}
