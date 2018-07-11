@@ -1,5 +1,10 @@
 # changelog
 
+## 1.1.10
+
++ feat: add broadcast method to system.
++ fix: ActorRef.tell will call internal actor's scheduler directly.
+
 ## 1.1.9
 
 + add the type parameter to callback argument inside `IActorReceiveBuilder`.
