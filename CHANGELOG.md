@@ -1,5 +1,9 @@
 # changelog
 
+## 1.1.11
+
++ refactor: broadcast can now specify parent node.
+
 ## 1.1.10
 
 + feat: add broadcast method to system.
