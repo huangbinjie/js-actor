@@ -37,17 +37,19 @@ test("stop child should remove all child of the child's listener", t => {
 	t.is(system.getRoot().getActor().context.children.size, 0)
 })
 
-test("find grandchild", t => {
+test("child", t => {
 	const system = new ActorSystem("testSystem")
 	const selfActor = system.actorOf(new Self, "self")
 	const childActor = selfActor.getActor().context.actorOf(new Child, "child")
-	const grandchild = childActor.getActor().context.actorOf(new Grandchild, "grandchild")
+	const grandchildActor = childActor.getActor().context.actorOf(new Grandchild, "grandchild")
 
-	const grandChildActor = selfActor.getActor().context.child("grandchild")!
-	t.truthy(grandChildActor)
-	const grandChildContext = grandChildActor.getActor().context
-	t.is(grandChildContext.path, "root/self/child/grandchild")
-	t.is(grandChildContext.name, "grandchild")
+	const child = selfActor.getActor().context.child("child")
+	const grandChild = selfActor.getActor().context.child("grandchild")
+	t.truthy(child)
+	t.is(grandChild, undefined)
+	const childContext = child!.getActor().context
+	t.is(childContext.path, "root/self/child")
+	t.is(childContext.name, "child")
 })
 
 test("become", t => {

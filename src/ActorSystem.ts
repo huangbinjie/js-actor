@@ -28,9 +28,17 @@ export class ActorSystem {
 	 * broadcast message all to system.
 	 * @param message 
 	 * @param volume you can set the volume to positive number
+	 * @param to message would broadcast to this node's children. default is "root/"
 	 */
-	public broadcast(message: object, volume = 0) {
-		this.eventStream.emit(volume <= 0 ? "**" : "root." + Array(volume).fill("*").join("."), message)
+	public broadcast(message: object, to = "root/", volume = 0) {
+		if (volume > 0) {
+			Array.from({ length: volume }).forEach((_, n) => {
+				const wildcardPath = Array(n + 1).fill("*").join("/")
+				this.eventStream.emit(to + wildcardPath, message)
+			})
+		} else {
+			this.eventStream.emit(to + "*/**", message)
+		}
 	}
 
 	// Create new actor as child of this context and give it an automatically generated name
@@ -54,6 +62,7 @@ export class ActorSystem {
 
 	constructor(public name: string) {
 		this.eventStream = new EventEmitter2({
+			delimiter: "/",
 			wildcard: true,
 			verboseMemoryLeak: true
 		})

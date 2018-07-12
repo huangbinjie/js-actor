@@ -12,7 +12,7 @@ export interface IActorContext {
   path: string
 
   actorOf(actor: AbstractActor, name?: string): ActorRef
-  child(name: string): ActorRef | null
+  child(name: string): ActorRef | undefined
   stop(actorRef: ActorRef): void
   become(behavior: IActorReceive): void
   isAlive(): boolean

@@ -36,7 +36,7 @@ test("emit all", t => {
   system.eventStream.emit("**", new Entity("1"))
 })
 
-test("broadcast to all hierarchy", t => {
+test("broadcast to all", t => {
   t.plan(3)
   class Self extends AbstractActor {
     public createReceive() {
@@ -67,17 +67,16 @@ test("broadcast to all hierarchy", t => {
   const childActor = selfActor.getActor().context.actorOf(new Child, "child")
   const grandchild = childActor.getActor().context.actorOf(new Grandchild, "grandchild")
 
-  // broadcast message to level 2. root: 0, self: 1, child: 2
   system.broadcast({ n: 1 })
 })
 
-test("broadcast to a special hierarchy", t => {
-  t.plan(2)
+test("broadcast to", t => {
+  t.plan(3)
   class Self extends AbstractActor {
     public createReceive() {
-      return this.receiveBuilder().matchAny(obj =>
+      return this.receiveBuilder().matchAny(obj => {
         t.is(obj.n, 1)
-      ).build()
+      }).build()
     }
   }
 
@@ -85,7 +84,6 @@ test("broadcast to a special hierarchy", t => {
     public createReceive() {
       return this.receiveBuilder().matchAny(obj => {
         t.is(obj.n, 1)
-        t.pass()
       }).build()
     }
   }
@@ -101,8 +99,43 @@ test("broadcast to a special hierarchy", t => {
   const system = new ActorSystem("testSystem")
   const selfActor = system.actorOf(new Self, "self")
   const childActor = selfActor.getActor().context.actorOf(new Child, "child")
+  const childActor1 = selfActor.getActor().context.actorOf(new Child, "child1")
   const grandchild = childActor.getActor().context.actorOf(new Grandchild, "grandchild")
 
-  // broadcast message to level 2(child). root: 0, self: 1, child: 2
-  system.broadcast({ n: 1 }, 2)
+  system.broadcast({ n: 1 }, "root/self/")
+})
+
+test("broadcast to with volume", t => {
+  t.plan(2)
+  class Self extends AbstractActor {
+    public createReceive() {
+      return this.receiveBuilder().matchAny(obj =>
+        t.is(obj.n, 1)
+      ).build()
+    }
+  }
+
+  class Child extends AbstractActor {
+    public createReceive() {
+      return this.receiveBuilder().matchAny(obj => {
+        t.is(obj.n, 1)
+      }).build()
+    }
+  }
+
+  class Grandchild extends AbstractActor {
+    public createReceive() {
+      return this.receiveBuilder().matchAny(obj => {
+        t.is(obj.n, 1)
+      }).build()
+    }
+  }
+
+  const system = new ActorSystem("testSystem")
+  const selfActor = system.actorOf(new Self, "self")
+  const childActor = selfActor.getActor().context.actorOf(new Child, "child")
+  const childActor1 = selfActor.getActor().context.actorOf(new Child, "child1")
+  const grandchild = childActor.getActor().context.actorOf(new Grandchild, "grandchild")
+
+  system.broadcast({ n: 1 }, "root/self/", 1)
 })

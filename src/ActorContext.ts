@@ -30,15 +30,8 @@ export class ActorContext implements IActorContext {
 		return actorRef
 	}
 
-	public child(name: string): ActorRef | null {
-		const child = this.children.get(name)
-		if (!child) {
-			for (let child of this.children.values()) {
-				const targetActor = child.getActor().context.child(name)
-				if (targetActor) return targetActor
-			}
-		}
-		return child || null
+	public child(name: string): ActorRef | undefined {
+		return this.children.get(name)
 	}
 
 	/** stop self from parent, elsewise try to stop child

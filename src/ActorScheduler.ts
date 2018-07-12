@@ -15,7 +15,6 @@ export class ActorScheduler implements IActorScheduler {
 		protected listeners: Listener[],
 		protected owner: AbstractActor
 	) {
-		this.event = this.event.replace(/\//g, ".")
 		this.defaultListener = this.listeners.find(listener => !listener.message)
 	}
 
