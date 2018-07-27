@@ -83,7 +83,7 @@ test("logging every message passthrough system", t => {
 		}
 
 		public preStart() {
-			this.context.system.eventStream.on("*", function ({ n }) {
+			this.context.system.eventStream.on("**", function ({ n }) {
 				t.truthy(n)
 			})
 		}

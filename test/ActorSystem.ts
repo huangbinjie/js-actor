@@ -36,6 +36,26 @@ test("emit all", t => {
   system.eventStream.emit("**", new Entity("1"))
 })
 
+test("listen all", t => {
+  t.plan(2)
+  const system = new ActorSystem("testSystem")
+
+  class Test extends AbstractActor {
+    preStart() {
+      this.context.system.eventStream.onAny((event, obj) => {
+        t.is(obj.n, 1)
+      })
+    }
+    createReceive() {
+      return this.receiveBuilder().build()
+    }
+  }
+
+  system.actorOf(new Test)
+  system.eventStream.emit("**", { n: 1 })
+  system.eventStream.emit("*", { n: 1 })
+})
+
 test("broadcast to all", t => {
   t.plan(3)
   class Self extends AbstractActor {
