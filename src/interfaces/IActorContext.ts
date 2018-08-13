@@ -13,6 +13,7 @@ export interface IActorContext {
 
   actorOf(actor: AbstractActor, name?: string): ActorRef
   child(name: string): ActorRef | undefined
+  get<T extends AbstractActor>(token: new () => T): T | undefined
   stop(actorRef: ActorRef): void
   become(behavior: IActorReceive): void
   isAlive(): boolean
