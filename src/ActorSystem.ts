@@ -50,6 +50,10 @@ export class ActorSystem {
 		return this.rootActorRef
 	}
 
+	public get<T extends AbstractActor>(token: new () => T): T | undefined {
+		return this.getRoot().getActor().context.get(token)
+	}
+
 	public stop(actorRef: ActorRef) {
 		this.rootActorRef.getActor().context.stop(actorRef)
 	}

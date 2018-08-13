@@ -66,6 +66,21 @@ test("become", t => {
 
 })
 
+test("get", t => {
+	t.plan(1)
+	const system = new ActorSystem("testSystem")
+	class DriveChild extends Child {
+		shouldPass() {
+			t.pass()
+		}
+	}
+	system.actorOf(new DriveChild)
+	const child = system.get(DriveChild)
+	if (child) {
+		child.shouldPass()
+	}
+})
+
 test("change the behavior of self while self is living", t => {
 	t.plan(2)
 	class ChangeBehavior { }

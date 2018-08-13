@@ -34,6 +34,15 @@ export class ActorContext implements IActorContext {
 		return this.children.get(name)
 	}
 
+	public get<T extends AbstractActor>(token: new () => T): T | undefined {
+		for (let actor of this.children.values()) {
+			const instance = actor.getActor()
+			if (instance instanceof token) {
+				return instance
+			}
+		}
+	}
+
 	/** stop self from parent, elsewise try to stop child
 	 *  stop should remove listener and delete the referece at children map.
 	 *  this is a recursive operation, so give an accurate parent to stop
