@@ -5,9 +5,9 @@ import { ActorScheduler } from ".";
 import { Listener } from "./interfaces/Listener";
 
 /** handle reference to an actor, whitch may reside on an actor or root actor */
-export class ActorRef {
+export class ActorRef<T extends AbstractActor = AbstractActor> {
 	constructor(
-		private actor: AbstractActor,
+		private actor: T,
 		system: ActorSystem,
 		listeners: Listener[],
 		parent: ActorRef,
@@ -21,8 +21,12 @@ export class ActorRef {
 		actor.context = context
 	}
 
-	public getActor() {
+	public getInstance() {
 		return this.actor
+	}
+
+	public getContext() {
+		return this.actor.context
 	}
 
 	public tell(message: object, sender?: ActorRef) {

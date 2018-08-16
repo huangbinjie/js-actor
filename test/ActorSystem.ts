@@ -84,8 +84,8 @@ test("broadcast to all", t => {
 
   const system = new ActorSystem("testSystem")
   const selfActor = system.actorOf(new Self, "self")
-  const childActor = selfActor.getActor().context.actorOf(new Child, "child")
-  const grandchild = childActor.getActor().context.actorOf(new Grandchild, "grandchild")
+  const childActor = selfActor.getInstance().context.actorOf(new Child, "child")
+  const grandchild = childActor.getInstance().context.actorOf(new Grandchild, "grandchild")
 
   system.broadcast({ n: 1 })
 })
@@ -118,9 +118,9 @@ test("broadcast to", t => {
 
   const system = new ActorSystem("testSystem")
   const selfActor = system.actorOf(new Self, "self")
-  const childActor = selfActor.getActor().context.actorOf(new Child, "child")
-  const childActor1 = selfActor.getActor().context.actorOf(new Child, "child1")
-  const grandchild = childActor.getActor().context.actorOf(new Grandchild, "grandchild")
+  const childActor = selfActor.getInstance().context.actorOf(new Child, "child")
+  const childActor1 = selfActor.getInstance().context.actorOf(new Child, "child1")
+  const grandchild = childActor.getInstance().context.actorOf(new Grandchild, "grandchild")
 
   system.broadcast({ n: 1 }, "root/self/")
 })
@@ -153,9 +153,9 @@ test("broadcast to with volume", t => {
 
   const system = new ActorSystem("testSystem")
   const selfActor = system.actorOf(new Self, "self")
-  const childActor = selfActor.getActor().context.actorOf(new Child, "child")
-  const childActor1 = selfActor.getActor().context.actorOf(new Child, "child1")
-  const grandchild = childActor.getActor().context.actorOf(new Grandchild, "grandchild")
+  const childActor = selfActor.getInstance().context.actorOf(new Child, "child")
+  const childActor1 = selfActor.getInstance().context.actorOf(new Child, "child1")
+  const grandchild = childActor.getInstance().context.actorOf(new Grandchild, "grandchild")
 
   system.broadcast({ n: 1 }, "root/self/", 1)
 })

@@ -34,11 +34,11 @@ export class ActorContext implements IActorContext {
 		return this.children.get(name)
 	}
 
-	public get<T extends AbstractActor>(token: new () => T): T | undefined {
-		for (let actor of this.children.values()) {
-			const instance = actor.getActor()
+	public get<T extends AbstractActor>(token: new () => T): ActorRef<T> | undefined {
+		for (let actorRef of this.children.values()) {
+			const instance = actorRef.getInstance()
 			if (instance instanceof token) {
-				return instance
+				return actorRef as ActorRef<T>
 			}
 		}
 	}
@@ -50,16 +50,16 @@ export class ActorContext implements IActorContext {
 	 *  @param actorRef
 	 */
 	public stop(actorRef = this.self) {
-		const context = actorRef.getActor().context
-		if (this.self.getActor().context.path === context.path) {
-			this.parent.getActor().context.stop(actorRef)
+		const context = actorRef.getInstance().context
+		if (this.self.getInstance().context.path === context.path) {
+			this.parent.getInstance().context.stop(actorRef)
 		} else {
 			const child = this.children.get(context.name)!
-			let sdu = child.getActor().context.scheduler
+			let sdu = child.getInstance().context.scheduler
 			sdu.cancel()
-			child.getActor().postStop()
-			for (let grandchild of child.getActor().context.children.values()) {
-				grandchild.getActor().context.stop()
+			child.getInstance().postStop()
+			for (let grandchild of child.getInstance().context.children.values()) {
+				grandchild.getInstance().context.stop()
 			}
 			this.children.delete(context.name)
 		}

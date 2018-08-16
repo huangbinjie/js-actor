@@ -43,25 +43,25 @@ export class ActorSystem {
 
 	// Create new actor as child of this context and give it an automatically generated name
 	public actorOf(actor: AbstractActor, name = generate()) {
-		return this.rootActorRef.getActor().context.actorOf(actor, name)
+		return this.rootActorRef.getInstance().context.actorOf(actor, name)
 	}
 
 	public getRoot() {
 		return this.rootActorRef
 	}
 
-	public get<T extends AbstractActor>(token: new () => T): T | undefined {
-		return this.getRoot().getActor().context.get(token)
+	public get<T extends AbstractActor>(token: new () => T): ActorRef<T> | undefined {
+		return this.getRoot().getInstance().context.get(token)
 	}
 
 	public stop(actorRef: ActorRef) {
-		this.rootActorRef.getActor().context.stop(actorRef)
+		this.rootActorRef.getInstance().context.stop(actorRef)
 	}
 
 	/* release all listener, and clear rootActor's children */
 	public terminal() {
 		this.eventStream.removeAllListeners()
-		this.rootActorRef.getActor().context.children.clear()
+		this.rootActorRef.getInstance().context.children.clear()
 	}
 
 	constructor(public name: string) {

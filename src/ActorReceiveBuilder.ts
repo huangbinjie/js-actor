@@ -1,4 +1,3 @@
-import { ActorSystem } from "./ActorSystem"
 import { Listener } from "./interfaces/Listener"
 import { Message } from "./interfaces/Message"
 import { IActorReceiveBuilder } from "./interfaces/IActorReceiveBuilder"

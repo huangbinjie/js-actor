@@ -30,24 +30,24 @@ test("root actor should not listen", t => {
 test("stop child should remove all child of the child's listener", t => {
 	const system = new ActorSystem("testSystem")
 	const selfActor = system.actorOf(new Self, "self")
-	const childActor = selfActor.getActor().context.actorOf(new Child, "child")
-	const grandchild = childActor.getActor().context.actorOf(new Grandchild, "grandchild")
+	const childActor = selfActor.getInstance().context.actorOf(new Child, "child")
+	const grandchild = childActor.getInstance().context.actorOf(new Grandchild, "grandchild")
 	system.stop(selfActor)
 	t.is(system.eventStream.eventNames().length, 0)
-	t.is(system.getRoot().getActor().context.children.size, 0)
+	t.is(system.getRoot().getInstance().context.children.size, 0)
 })
 
 test("child", t => {
 	const system = new ActorSystem("testSystem")
 	const selfActor = system.actorOf(new Self, "self")
-	const childActor = selfActor.getActor().context.actorOf(new Child, "child")
-	const grandchildActor = childActor.getActor().context.actorOf(new Grandchild, "grandchild")
+	const childActor = selfActor.getInstance().context.actorOf(new Child, "child")
+	const grandchildActor = childActor.getInstance().context.actorOf(new Grandchild, "grandchild")
 
-	const child = selfActor.getActor().context.child("child")
-	const grandChild = selfActor.getActor().context.child("grandchild")
+	const child = selfActor.getInstance().context.child("child")
+	const grandChild = selfActor.getInstance().context.child("grandchild")
 	t.truthy(child)
 	t.is(grandChild, undefined)
-	const childContext = child!.getActor().context
+	const childContext = child!.getInstance().context
 	t.is(childContext.path, "root/self/child")
 	t.is(childContext.name, "child")
 })
@@ -58,11 +58,11 @@ test("become", t => {
 
 	const behavior = ActorReceiveBuilder.create().matchAny(({ n }) => t.is(1, n)).build()
 
-	selfActor.getActor().context.become(behavior)
+	selfActor.getInstance().context.become(behavior)
 
 	selfActor.tell({ n: 1 })
 
-	selfActor.getActor().context.stop()
+	selfActor.getInstance().context.stop()
 
 })
 
@@ -77,7 +77,7 @@ test("get", t => {
 	system.actorOf(new DriveChild)
 	const child = system.get(DriveChild)
 	if (child) {
-		child.shouldPass()
+		child.getInstance().shouldPass()
 	}
 })
 
