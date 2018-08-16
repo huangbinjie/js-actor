@@ -1,5 +1,9 @@
 # changelog
 
+## 1.2.1
+
++ feat: context.get should return ActorRef instead of AbstractActor
+
 ## 1.2.0
 
 + feat: add `get` to system and context.
