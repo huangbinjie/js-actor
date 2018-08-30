@@ -2,6 +2,7 @@ import { Message } from "./Message"
 import { IActorReceive } from "./IActorReceive"
 
 export interface IActorReceiveBuilder {
+  answer<S, T>(message: Message<T>, callback: (resolve: (value?: S | PromiseLike<S>) => void, reject: (reason?: any) => void) => (value: T) => void): this
   match<T1, T2, T3, T4, T5>(messages: [Message<T1>, Message<T2>, Message<T3>, Message<T4>, Message<T5>], callback: (obj: T1 | T2 | T3 | T4 | T5) => any): IActorReceiveBuilder
   match<T1, T2, T3, T4, T5>(messages: [Message<T1>, Message<T2>, Message<T3>, Message<T4>, Message<T5>], callback: (obj: any) => any): IActorReceiveBuilder
   match<T1, T2, T3, T4>(messages: [Message<T1>, Message<T2>, Message<T3>, Message<T4>], callback: (obj: any) => T1 | T2 | T3 | T4): IActorReceiveBuilder

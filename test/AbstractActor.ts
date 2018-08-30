@@ -50,6 +50,23 @@ test("match", t => {
 	testActor.tell(new Entity1("test"))
 })
 
+test("ask", async t => {
+	t.plan(1)
+	class TestActor extends AbstractActor {
+		public createReceive() {
+			return this.receiveBuilder()
+				.answer(Entity, (resolve) => entity => {
+					resolve("i have received your message: " + entity.message)
+				})
+				.build()
+		}
+	}
+	const testActor = system.actorOf(new TestActor)
+	const response = await testActor.ask<string>(new Entity("test"))
+
+	t.is("i have received your message: test", response)
+})
+
 test("tell should not go through system.eventStream", t => {
 	t.plan(2)
 	class LoggerActor extends AbstractActor {

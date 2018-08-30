@@ -14,15 +14,20 @@ export class ActorReceiveBuilder implements IActorReceiveBuilder {
 
 	public match<T extends object>(message: Message<T> | Message<object>[], callback: Listener<T>["callback"]) {
 		if (Array.isArray(message)) {
-			message.forEach(message => this.listeners.push({ message, callback }))
+			message.forEach(message => this.listeners.push({ message, type: "tell", callback }))
 		} else {
-			this.listeners.push({ message, callback })
+			this.listeners.push({ message, type: "tell", callback })
 		}
 		return this
 	}
 
-	public matchAny(callback: (obj: any) => void) {
-		this.listeners.push({ callback })
+	public answer<S, T>(message: Message<T>, callback: (resolve: (value?: S | PromiseLike<S>) => void, reject: (reason?: any) => void) => (value: T) => void) {
+		this.listeners.push({ message, type: "ask", callback })
+		return this
+	}
+
+	public matchAny<T>(callback: (obj: any) => void) {
+		this.listeners.push({ type: "tell", callback })
 		return this
 	}
 

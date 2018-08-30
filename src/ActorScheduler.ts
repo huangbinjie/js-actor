@@ -18,13 +18,29 @@ export class ActorScheduler implements IActorScheduler {
 		this.defaultListener = this.listeners.find(listener => !listener.message)
 	}
 
+	public getListeners() {
+		return this.listeners
+	}
+
 	public callback = (value: object) => {
 		const listener = this.listeners.find(listener => !!listener.message && value instanceof listener.message)
 		try {
 			if (listener) {
-				return listener.callback(value)
+				if (listener.type === "ask") {
+					const callback = listener.callback as Listener<object, "ask">["callback"]
+					return new Promise((resolve, reject) => {
+						callback(resolve, reject)(value)
+					})
+				} else {
+					const callback = listener.callback as Listener<object, "tell">["callback"]
+					callback(value)
+				}
+			} else {
+				if (this.defaultListener) {
+					const callback = this.defaultListener.callback as Listener<object, "tell">["callback"]
+					callback(value)
+				}
 			}
-			return this.defaultListener && this.defaultListener.callback(value)
 		} catch (e) {
 			this.owner.postError(e)
 		}
