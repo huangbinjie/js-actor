@@ -1,5 +1,17 @@
 # changelog
 
+## 1.3.0
+
++ feat: add ask pattern
+
+```ts
+const answer = await actorRef.ask(new Question())
+
+receiveBuilder().answer(Question, resolve => question => {
+  resolve("This is the answer to the question.")
+})
+```
+
 ## 1.2.1
 
 + feat: context.get should return ActorRef instead of AbstractActor
