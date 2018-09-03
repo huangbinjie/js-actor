@@ -1,5 +1,9 @@
 # changelog
 
+## 1.3.1
+
++ fix: ask callback may call twice.
+
 ## 1.3.0
 
 + feat: add ask pattern
