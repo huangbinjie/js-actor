@@ -38,7 +38,7 @@ export class ActorRef<T extends AbstractActor = AbstractActor> {
 		this.actor.context.sender = sender || null
 		const result = this.actor.context.scheduler.callback(message)
 		if (result && result.then) {
-			return this.actor.context.scheduler.callback(message) as Promise<T>
+			return result
 		} else {
 			throw TypeError(`Please use ".answer" to catch ${Object.getPrototypeOf(message).constructor.name}`)
 		}

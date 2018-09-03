@@ -51,11 +51,12 @@ test("match", t => {
 })
 
 test("ask", async t => {
-	t.plan(1)
+	t.plan(2)
 	class TestActor extends AbstractActor {
 		public createReceive() {
 			return this.receiveBuilder()
 				.answer(Entity, (resolve) => entity => {
+					t.pass()
 					resolve("i have received your message: " + entity.message)
 				})
 				.build()
