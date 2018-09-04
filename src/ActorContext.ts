@@ -34,7 +34,7 @@ export class ActorContext implements IActorContext {
 		return this.children.get(name)
 	}
 
-	public get<T extends AbstractActor>(token: new () => T): ActorRef<T> | undefined {
+	public get<T extends AbstractActor>(token: new (...args: any[]) => T): ActorRef<T> | undefined {
 		for (let actorRef of this.children.values()) {
 			const instance = actorRef.getInstance()
 			if (instance instanceof token) {
