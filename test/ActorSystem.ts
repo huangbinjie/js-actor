@@ -10,33 +10,21 @@ class Entity1 {
   constructor(public message: string) { }
 }
 
-test("emit all", t => {
-  t.plan(2)
+class TestActor extends AbstractActor {
+  createReceive() {
+    return this.receiveBuilder().build()
+  }
+}
+
+test("no listen", t => {
   const system = new ActorSystem("testSystem")
 
-  class A1 extends AbstractActor {
-    public createReceive() {
-      return this.receiveBuilder()
-        .match(Entity, entity => t.is(entity.message, "1"))
-        .build()
-    }
-  }
+  const testActor = system.actorOf(new TestActor)
 
-  class A2 extends AbstractActor {
-    public createReceive() {
-      return this.receiveBuilder()
-        .match(Entity, entity => t.is(entity.message, "1"))
-        .build()
-    }
-  }
-
-  system.actorOf(new A1)
-  system.actorOf(new A2)
-
-  system.eventStream.emit("**", new Entity("1"))
+  t.is(system.eventStream.eventNames().length, 0)
 })
 
-test("listen all", t => {
+test("onAny", t => {
   t.plan(2)
   const system = new ActorSystem("testSystem")
 
@@ -52,8 +40,8 @@ test("listen all", t => {
   }
 
   system.actorOf(new Test)
-  system.eventStream.emit("**", { n: 1 })
-  system.eventStream.emit("*", { n: 1 })
+  system.broadcast({ n: 1 })
+  system.broadcast({ n: 1 })
 })
 
 test("broadcast to all", t => {
@@ -158,4 +146,54 @@ test("broadcast to with volume", t => {
   const grandchild = childActor.getInstance().context.actorOf(new Grandchild, "grandchild")
 
   system.broadcast({ n: 1 }, "root/self/", 1)
+})
+
+
+test("logging every message passthrough system", t => {
+  t.plan(1)
+  const system = new ActorSystem("testSystem")
+  class LoggerActor extends AbstractActor {
+    public createReceive() {
+      return this.receiveBuilder()
+        .build()
+    }
+
+    public preStart() {
+      this.context.system.eventStream.on("**", async function ({ n }) {
+        t.is(n, 1)
+      })
+    }
+
+    public postStop() {
+      // stop listener
+    }
+  }
+
+  const logger = system.actorOf(new LoggerActor, "logger")
+  system.tell("anyMessage", { n: 1 })
+})
+
+test("logging self message", t => {
+  t.plan(1)
+  const system = new ActorSystem("testSystem")
+  class LoggerActor extends AbstractActor {
+    public createReceive() {
+      return this.receiveBuilder()
+        .build()
+    }
+
+    public preStart() {
+      this.context.system.eventStream.on(this.context.path, function ({ n }) {
+        t.is(n, 2)
+      })
+    }
+
+    public postStop() {
+      // stop listener
+    }
+  }
+
+  const logger = system.actorOf(new LoggerActor, "logger")
+  system.tell("root/anyMessage", { n: 1 })
+  system.tell("root/logger", { n: 2 })
 })

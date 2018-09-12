@@ -2,8 +2,6 @@ import { test } from "ava"
 import { ActorSystem } from "../src/ActorSystem"
 import { AbstractActor } from "../src/AbstractActor"
 
-const system = new ActorSystem("testSystem")
-
 class Entity {
 	constructor(public message: string) { }
 }
@@ -18,16 +16,9 @@ class TestActor extends AbstractActor {
 	}
 }
 
-
-test("no listen", t => {
-
-	const testActor = system.actorOf(new TestActor)
-
-	t.is(system.eventStream.eventNames().length, 0)
-})
-
 test("match", t => {
 	t.plan(3)
+	const system = new ActorSystem("testSystem")
 	class TestActor extends AbstractActor {
 		public createReceive() {
 			return this.receiveBuilder()
@@ -51,7 +42,8 @@ test("match", t => {
 })
 
 test("ask", async t => {
-	t.plan(2)
+	t.plan(4)
+	const system = new ActorSystem("testSystem")
 	class TestActor extends AbstractActor {
 		public createReceive() {
 			return this.receiveBuilder()
@@ -59,88 +51,48 @@ test("ask", async t => {
 					t.pass()
 					resolve("i have received your message: " + entity.message)
 				})
+				.answer(Entity1, (resolve) => entity1 => {
+					t.pass()
+					resolve("i have received your message: " + entity1.message)
+				})
 				.build()
 		}
 	}
 	const testActor = system.actorOf(new TestActor)
 	const response = await testActor.ask<string>(new Entity("test"))
+	const res1 = await testActor.ask<string>(new Entity1("test1"))
 
 	t.is("i have received your message: test", response)
+	t.is("i have received your message: test1", res1)
 })
 
-test("tell should not go through system.eventStream", t => {
+test.cb("asynchronous of tell should dependent on what to do.", t => {
 	t.plan(2)
-	class LoggerActor extends AbstractActor {
+	const system = new ActorSystem("testSystem")
+	let n = 0
+	class TestActor extends AbstractActor {
 		public createReceive() {
 			return this.receiveBuilder()
-				.match(Entity, entity => t.is(entity.message, "1"))
-				.matchAny(obj => t.is(obj.n, 1))
+				.match(Entity, async ({ message }) => {
+					const result = await new Promise(resolve => {
+						setTimeout(() => {
+							n++
+							resolve(n)
+						}, 10)
+					})
+					t.is(result, 1)
+				})
 				.build()
 		}
-
-		public preStart() {
-			this.context.system.eventStream.on("*", function ({ n }) {
-				// should not pass
-				t.pass()
-			})
-		}
 	}
-
-	const logger = system.actorOf(new LoggerActor, "logger")
-	logger.tell({ n: 1 })
-	logger.tell(new Entity("1"))
-})
-
-
-test("logging every message passthrough system", t => {
-	t.plan(2)
-	class LoggerActor extends AbstractActor {
-		public createReceive() {
-			return this.receiveBuilder()
-				.build()
-		}
-
-		public preStart() {
-			this.context.system.eventStream.on("**", function ({ n }) {
-				t.truthy(n)
-			})
-		}
-
-		public postStop() {
-			// stop listener
-		}
-	}
-
-	const logger = system.actorOf(new LoggerActor, "logger")
-	system.tell("anyMessage", { n: 1 })
-	system.tell("root/logger", { n: 2 })
-})
-
-test("logging self message", t => {
-	t.plan(1)
-	class LoggerActor extends AbstractActor {
-		public createReceive() {
-			return this.receiveBuilder()
-				.build()
-		}
-
-		public preStart() {
-			this.context.system.eventStream.on(this.context.path, function ({ n }) {
-				t.is(n, 2)
-			})
-		}
-
-		public postStop() {
-			// stop listener
-		}
-	}
-
-	const logger = system.actorOf(new LoggerActor, "logger")
-	system.tell("root/anyMessage", { n: 1 })
-	system.tell("root/logger", { n: 2 })
+	const testActor = system.actorOf(new TestActor)
+	testActor.tell(new Entity("111"))
+	t.is(n, 0)
+	setTimeout(() => t.end(), 50)
 })
 
 test("catch error message", t => {
+	const system = new ActorSystem("testSystem")
 	class CatchActor extends AbstractActor {
 		public createReceive() {
 			return this.receiveBuilder()

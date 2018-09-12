@@ -56,7 +56,9 @@ test("become", t => {
 	const system = new ActorSystem("testSystem")
 	const selfActor = system.actorOf(new Self)
 
-	const behavior = ActorReceiveBuilder.create().matchAny(({ n }) => t.is(1, n)).build()
+	const behavior = ActorReceiveBuilder.create().matchAny(({ n }) => {
+		t.is(1, n)
+	}).build()
 
 	selfActor.getInstance().context.become(behavior)
 
@@ -101,9 +103,8 @@ test("change the behavior of self while self is living", t => {
 
 	const behaviorActor = system.actorOf(new BahaviorActor)
 	behaviorActor.tell(new ChangeBehavior)
-	behaviorActor.tell(new ChangeBehavior)
 	behaviorActor.tell(new NewBehavior)
-	behaviorActor.tell(new ChangeBehavior)
 
 	system.terminal()
+
 })
