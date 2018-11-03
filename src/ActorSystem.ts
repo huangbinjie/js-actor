@@ -42,7 +42,7 @@ export class ActorSystem {
 	}
 
 	// Create new actor as child of this context and give it an automatically generated name
-	public actorOf(actor: AbstractActor, name = generate()) {
+	public actorOf<T extends AbstractActor>(actor: T, name = generate()) {
 		return this.rootActorRef.getInstance().context.actorOf(actor, name)
 	}
 

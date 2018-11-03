@@ -1,6 +1,5 @@
 import { ActorSystem } from "./ActorSystem"
 import { ActorRef } from "./ActorRef"
-import { ActorScheduler } from "./ActorScheduler"
 import { AbstractActor } from "./AbstractActor"
 import { ActorReceive } from "./ActorReceive"
 import { IActorContext } from "./interfaces/IActorContext"
@@ -23,7 +22,7 @@ export class ActorContext implements IActorContext {
 		public path: string,
 	) { }
 
-	public actorOf(actor: AbstractActor, name = generate()) {
+	public actorOf<T extends AbstractActor>(actor: T, name = generate()) {
 		const actorRef = new ActorRef(actor, this.system, [], this.self, this.path + "/" + name, name)
 		this.children.set(name, actorRef)
 		actor.receive()
