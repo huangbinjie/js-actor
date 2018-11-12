@@ -11,10 +11,10 @@ export interface IActorContext {
   parent: ActorRef
   path: string
 
-  actorOf(actor: AbstractActor, name?: string): ActorRef
+  actorOf<T extends AbstractActor>(actor: T, name?: string): ActorRef<T>
   child(name: string): ActorRef | undefined
   get<T extends AbstractActor>(token: new () => T): ActorRef<T> | undefined
-  stop(actorRef: ActorRef): void
+  stop(actorRef?: ActorRef): void
   become(behavior: IActorReceive): void
   isAlive(): boolean
 }
