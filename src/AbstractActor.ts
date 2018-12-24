@@ -19,7 +19,7 @@ export abstract class AbstractActor {
 		return this.context.sender
 	}
 
-	protected receiveBuilder(): IActorReceiveBuilder {
+	protected receiveBuilder() {
 		return ActorReceiveBuilder.create()
 	}
 

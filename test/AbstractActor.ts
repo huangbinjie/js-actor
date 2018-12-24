@@ -17,15 +17,12 @@ class TestActor extends AbstractActor {
 }
 
 test("match", t => {
-	t.plan(3)
+	t.plan(2)
 	const system = new ActorSystem("testSystem")
 	class TestActor extends AbstractActor {
 		public createReceive() {
 			return this.receiveBuilder()
 				.match(Entity, entity => {
-					t.is("test", entity.message)
-				})
-				.match([Entity1], entity => {
 					t.is("test", entity.message)
 				})
 				.matchAny(obj => {
@@ -38,7 +35,6 @@ test("match", t => {
 	const testActor = system.actorOf(new TestActor)
 	testActor.tell({ message: "testAny" })
 	testActor.tell(new Entity("test"))
-	testActor.tell(new Entity1("test"))
 })
 
 test("ask", async t => {

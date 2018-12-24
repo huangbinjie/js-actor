@@ -12,12 +12,8 @@ export class ActorReceiveBuilder implements IActorReceiveBuilder {
 		return new ActorReceiveBuilder()
 	}
 
-	public match<T extends object>(message: Message<T> | Message<object>[], callback: Listener<T>["callback"]) {
-		if (Array.isArray(message)) {
-			message.forEach(message => this.listeners.push({ message, type: "tell", callback }))
-		} else {
-			this.listeners.push({ message, type: "tell", callback })
-		}
+	public match<T extends object>(message: Message<T>, callback: (value: T) => void) {
+		this.listeners.push({ message, type: "tell", callback })
 		return this
 	}
 
