@@ -1,5 +1,9 @@
 # changelog
 
+## 1.3.4
+
++ remove array support for match
+
 ## 1.3.1
 
 + fix: ask callback may call twice.
