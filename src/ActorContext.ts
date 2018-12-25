@@ -1,10 +1,10 @@
 import { ActorSystem } from "./ActorSystem"
 import { ActorRef } from "./ActorRef"
-import { AbstractActor } from "./AbstractActor"
 import { ActorReceive } from "./ActorReceive"
 import { IActorContext } from "./interfaces/IActorContext"
 import { generate } from "shortid"
 import { IActorScheduler } from "./interfaces/IActorScheduler";
+import { IActor } from "./interfaces/IActor";
 
 /** the Actor context.
  *  Exposes contextual information for the actor
@@ -22,7 +22,7 @@ export class ActorContext implements IActorContext {
 		public path: string,
 	) { }
 
-	public actorOf<T extends AbstractActor>(actor: T, name = generate()) {
+	public actorOf<T extends IActor>(actor: T, name = generate()) {
 		const actorRef = new ActorRef(actor, this.system, [], this.self, this.path + "/" + name, name)
 		this.children.set(name, actorRef)
 		actor.receive()
@@ -33,7 +33,7 @@ export class ActorContext implements IActorContext {
 		return this.children.get(name)
 	}
 
-	public get<T extends AbstractActor>(token: new (...args: any[]) => T): ActorRef<T> | undefined {
+	public get<T extends IActor>(token: new (...args: any[]) => T): ActorRef<T> | undefined {
 		for (let actorRef of this.children.values()) {
 			const instance = actorRef.getInstance()
 			if (instance instanceof token) {

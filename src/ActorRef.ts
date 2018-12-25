@@ -1,11 +1,11 @@
-import { AbstractActor } from "./AbstractActor"
 import { ActorSystem } from "./ActorSystem"
 import { ActorContext } from "./ActorContext"
 import { ActorScheduler } from ".";
 import { Listener } from "./interfaces/Listener";
+import { IActor } from "./interfaces/IActor";
 
 /** handle reference to an actor, whitch may reside on an actor or root actor */
-export class ActorRef<T extends AbstractActor = AbstractActor> {
+export class ActorRef<T extends IActor = IActor> {
 	constructor(
 		private actor: T,
 		system: ActorSystem,

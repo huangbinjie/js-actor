@@ -1,7 +1,7 @@
 import { EventEmitter2 } from "eventemitter2"
-import { AbstractActor } from "./AbstractActor"
 import { Listener } from "./interfaces/Listener"
 import { IActorScheduler } from "./interfaces/IActorScheduler"
+import { IActor } from "./interfaces/IActor";
 
 /** a schedule service to listen current system's event stream
  *  for performance perspective，current implemantation all listen system, not listen actor respective
@@ -13,7 +13,7 @@ export class ActorScheduler implements IActorScheduler {
 		protected eventStream: EventEmitter2,
 		protected event: string,
 		protected listeners: Listener[],
-		protected owner: AbstractActor
+		protected owner: IActor
 	) {
 		this.defaultListener = this.listeners.find(listener => !listener.message)
 	}

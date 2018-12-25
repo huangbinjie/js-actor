@@ -1,8 +1,8 @@
 import { EventEmitter2 } from "eventemitter2"
-import { AbstractActor } from "./AbstractActor"
 import { ActorRef } from "./ActorRef"
 import { RootActor } from "./RootActor"
 import { generate } from "shortid"
+import { IActor } from "./interfaces/IActor";
 
 
 /** An ActorSystem is a heavyweight structure that will allocate listenner.
@@ -42,7 +42,7 @@ export class ActorSystem {
 	}
 
 	// Create new actor as child of this context and give it an automatically generated name
-	public actorOf<T extends AbstractActor>(actor: T, name = generate()) {
+	public actorOf<T extends IActor>(actor: T, name = generate()) {
 		return this.rootActorRef.getInstance().context.actorOf(actor, name)
 	}
 
@@ -50,7 +50,7 @@ export class ActorSystem {
 		return this.rootActorRef
 	}
 
-	public get<T extends AbstractActor>(token: new (...args: any[]) => T): ActorRef<T> | undefined {
+	public get<T extends IActor>(token: new (...args: any[]) => T): ActorRef<T> | undefined {
 		return this.getRoot().getInstance().context.get(token)
 	}
 
