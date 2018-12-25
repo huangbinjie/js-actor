@@ -10,6 +10,7 @@ export abstract class AbstractActor {
 	public context!: ActorContext
 
 	protected abstract createReceive(): IActorReceive
+	protected abstract receiveBuilder(): IActorReceiveBuilder
 
 	protected getSelf() {
 		return this.context.self
@@ -17,10 +18,6 @@ export abstract class AbstractActor {
 
 	protected getSender() {
 		return this.context.sender
-	}
-
-	protected receiveBuilder() {
-		return ActorReceiveBuilder.create()
 	}
 
 	public receive() {
