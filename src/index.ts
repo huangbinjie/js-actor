@@ -1,4 +1,5 @@
 // interface
+export { IActor } from "./interfaces/IActor"
 export { IActorContext } from "./interfaces/IActorContext"
 export { IActorReceiveBuilder } from "./interfaces/IActorReceiveBuilder"
 export { IActorReceive } from "./interfaces/IActorReceive"

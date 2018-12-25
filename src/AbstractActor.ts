@@ -1,22 +1,18 @@
 import { ActorContext } from "./ActorContext"
 import { IActorReceive } from "./interfaces/IActorReceive"
-import { IActorReceiveBuilder } from "."
+import { ActorReceiveBuilder } from "./ActorReceiveBuilder"
+import { IActor } from "./interfaces/IActor";
 
 /** 
  * abstract class that should be extended to create your actor
  */
-export abstract class AbstractActor {
+export abstract class AbstractActor implements IActor {
 	public context!: ActorContext
 
-	protected abstract createReceive(): IActorReceive
-	protected abstract receiveBuilder(): IActorReceiveBuilder
+	public abstract createReceive(): IActorReceive
 
-	protected getSelf() {
-		return this.context.self
-	}
-
-	protected getSender() {
-		return this.context.sender
+	public receiveBuilder() {
+		return ActorReceiveBuilder.create()
 	}
 
 	public receive() {
@@ -39,6 +35,14 @@ export abstract class AbstractActor {
 	/** is called after Receive got error */
 	public postError(err: Error) {
 		throw err
+	}
+
+	protected getSelf() {
+		return this.context.self
+	}
+
+	protected getSender() {
+		return this.context.sender
 	}
 
 }
