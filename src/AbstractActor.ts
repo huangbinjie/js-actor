@@ -1,6 +1,5 @@
 import { ActorContext } from "./ActorContext"
 import { IActorReceive } from "./interfaces/IActorReceive"
-import { ActorReceiveBuilder } from "./ActorReceiveBuilder"
 import { IActorReceiveBuilder } from "."
 
 /** 
