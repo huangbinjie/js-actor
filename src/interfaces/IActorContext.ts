@@ -1,4 +1,4 @@
-import { ActorRef, ActorSystem, AbstractActor, IActorScheduler } from "..";
+import { ActorRef, ActorSystem, IActorScheduler, IActor } from "..";
 import { IActorReceive } from "./IActorReceive";
 
 export interface IActorContext {
@@ -11,9 +11,9 @@ export interface IActorContext {
   parent: ActorRef
   path: string
 
-  actorOf<T extends AbstractActor>(actor: T, name?: string): ActorRef<T>
+  actorOf<T extends IActor>(actor: T, name?: string): ActorRef<T>
   child(name: string): ActorRef | undefined
-  get<T extends AbstractActor>(token: new () => T): ActorRef<T> | undefined
+  get<T extends IActor>(token: new () => T): ActorRef<T> | undefined
   stop(actorRef?: ActorRef): void
   become(behavior: IActorReceive): void
   isAlive(): boolean
