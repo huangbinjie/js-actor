@@ -8,14 +8,14 @@ import { IActor } from "./interfaces/IActor";
 export class ActorRef<T extends IActor = IActor> {
 	constructor(
 		private actor: T,
-		system: ActorSystem,
+		private system: ActorSystem,
 		listeners: Listener[],
 		parent: ActorRef,
 		path: string,
 		name: string,
 	) {
 		// create a default scheduler, the actural scheduler will be set in actor.receive()
-		const scheduler = new ActorScheduler(system.eventStream, path, listeners, actor)
+		const scheduler = new ActorScheduler(system, path, listeners, actor)
 		const context = new ActorContext(name, this, system, null, scheduler, parent, path)
 
 		actor.context = context
@@ -30,13 +30,15 @@ export class ActorRef<T extends IActor = IActor> {
 	}
 
 	public tell(message: object, sender?: ActorRef) {
+		const serializedMessage = this.system.serialize && this.system.serializer.parse(message) || message
 		this.actor.context.sender = sender || null
-		this.actor.context.scheduler.callback(message)
+		this.actor.context.scheduler.callback(serializedMessage)
 	}
 
 	public ask<T = any>(message: object, sender?: ActorRef): Promise<T> {
 		this.actor.context.sender = sender || null
-		const result = this.actor.context.scheduler.callback(message)
+		const serializedMessage = this.system.serialize && this.system.serializer.parse(message) || message
+		const result = this.actor.context.scheduler.callback(serializedMessage)
 		if (result && result.then) {
 			return result
 		} else {

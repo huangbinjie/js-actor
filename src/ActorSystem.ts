@@ -3,6 +3,7 @@ import { ActorRef } from "./ActorRef"
 import { RootActor } from "./RootActor"
 import { generate } from "shortid"
 import { IActor } from "./interfaces/IActor";
+import { Serializer } from "./interfaces/Serializer";
 
 
 /** An ActorSystem is a heavyweight structure that will allocate listenner.
@@ -11,9 +12,15 @@ import { IActor } from "./interfaces/IActor";
 */
 export class ActorSystem {
 	private readonly rootActorRef = new ActorRef(new RootActor, this, [], {} as ActorRef, "root", "root")
+	
+	public serializer: Serializer = {
+		parse: message => ({ type: Object.getPrototypeOf(message).constructor.name, payload: message }),
+		payload: action => action.payload,
+		match: (messageInc, message) => messageInc.type === message.name
+	}
 
-	public static create(name: string) {
-		return new ActorSystem(name)
+	public static create(name: string, serialize?: boolean) {
+		return new ActorSystem(name, serialize)
 	}
 
 	// Main event bus of this actor system, used for example for logging.
@@ -31,13 +38,14 @@ export class ActorSystem {
 	 * @param to message would broadcast to this node's children. default is "root/"
 	 */
 	public broadcast(message: object, to = "root/", volume = 0) {
+		const serializedMessage = this.serialize && this.serializer.parse(message) || message
 		if (volume > 0) {
 			Array.from({ length: volume }).forEach((_, n) => {
 				const wildcardPath = Array(n + 1).fill("*").join("/")
-				this.eventStream.emit(to + wildcardPath, message)
+				this.eventStream.emit(to + wildcardPath, serializedMessage)
 			})
 		} else {
-			this.eventStream.emit(to + "*/**", message)
+			this.eventStream.emit(to + "*/**", serializedMessage)
 		}
 	}
 
@@ -64,7 +72,7 @@ export class ActorSystem {
 		this.rootActorRef.getInstance().context.children.clear()
 	}
 
-	constructor(public name: string) {
+	constructor(public name: string, public serialize?: boolean) {
 		this.eventStream = new EventEmitter2({
 			delimiter: "/",
 			wildcard: true,

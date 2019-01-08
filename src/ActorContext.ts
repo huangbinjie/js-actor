@@ -1,10 +1,10 @@
 import { ActorSystem } from "./ActorSystem"
 import { ActorRef } from "./ActorRef"
-import { ActorReceive } from "./ActorReceive"
 import { IActorContext } from "./interfaces/IActorContext"
 import { generate } from "shortid"
 import { IActorScheduler } from "./interfaces/IActorScheduler";
 import { IActor } from "./interfaces/IActor";
+import { IActorReceive } from ".";
 
 /** the Actor context.
  *  Exposes contextual information for the actor
@@ -68,7 +68,7 @@ export class ActorContext implements IActorContext {
 	 * change the Actor's behavior to become the new "Receive" handler.
 	 * @param behavior 
 	 */
-	public become(behavior: ActorReceive) {
+	public become(behavior: IActorReceive) {
 		this.scheduler.cancel()
 		const listeners = behavior.listeners
 		this.scheduler.replaceListeners(listeners)

@@ -6,6 +6,7 @@ export { IActorReceive } from "./interfaces/IActorReceive"
 export { IActorScheduler } from "./interfaces/IActorScheduler"
 export { Listener } from "./interfaces/Listener"
 export { Message } from "./interfaces/Message"
+export { Serializer } from "./interfaces/Serializer"
 // impl
 export { AbstractActor } from "./AbstractActor"
 export { ActorContext } from "./ActorContext"

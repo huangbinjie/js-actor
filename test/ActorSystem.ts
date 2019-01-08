@@ -1,6 +1,7 @@
 import { test } from "ava"
 import { ActorSystem } from "../src/ActorSystem"
 import { AbstractActor } from "../src/AbstractActor"
+import { Serializer } from "../src";
 
 class Entity {
   constructor(public message: string) { }
@@ -196,4 +197,22 @@ test("logging self message", t => {
   const logger = system.actorOf(new LoggerActor, "logger")
   system.tell("root/anyMessage", { n: 1 })
   system.tell("root/logger", { n: 2 })
+})
+
+test("serialize message", t => {
+  t.plan(3)
+  const system = ActorSystem.create("test serializer", true)
+  class Test extends AbstractActor {
+    preStart() {
+      this.context.system.eventStream.onAny(function (_, message) {
+        t.is(message.type, "Entity")
+        t.notDeepEqual(message.paylod, { message: "hello" })
+      })
+    }
+    createReceive() {
+      return this.receiveBuilder().match(Entity, entity => t.is(entity.message, "hello")).build()
+    }
+  }
+  system.actorOf(new Test)
+  system.broadcast(new Entity("hello"))
 })

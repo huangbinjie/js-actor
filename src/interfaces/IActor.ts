@@ -1,7 +1,7 @@
-import { ActorContext, IActorReceive, IActorReceiveBuilder } from "..";
+import { ActorContext, IActorReceive, IActorReceiveBuilder, IActorContext } from "..";
 
 export interface IActor {
-  context: ActorContext
+  context: IActorContext
   createReceive(): IActorReceive
   receiveBuilder(): IActorReceiveBuilder
   receive(): void

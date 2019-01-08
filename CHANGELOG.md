@@ -1,5 +1,8 @@
 # changelog
 
+## 1.4.0
+
++ add option `serialize`. If true message will be parsed to format {type, payload}.
 ## 1.3.4
 
 + remove array support for match
