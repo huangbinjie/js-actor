@@ -1,7 +1,7 @@
 import { EventEmitter2 } from "eventemitter2"
 import { ActorRef } from "./ActorRef"
 import { RootActor } from "./RootActor"
-import { generate } from "shortid"
+import { nanoid } from "nanoid"
 import { IActor } from "./interfaces/IActor";
 import { Serializer } from "./interfaces/Serializer";
 
@@ -50,7 +50,7 @@ export class ActorSystem {
 	}
 
 	// Create new actor as child of this context and give it an automatically generated name
-	public actorOf<T extends IActor>(actor: T, name = generate()) {
+	public actorOf<T extends IActor>(actor: T, name = nanoid()) {
 		return this.rootActorRef.getInstance().context.actorOf(actor, name)
 	}
 

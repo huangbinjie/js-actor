@@ -2,15 +2,15 @@
 	"compilerOptions": {
 		"strict": true,
 		"module": "commonjs",
-		"target": "es5",
+		"target": "ES2020",
 		"outDir": "bin",
-		"downlevelIteration": true,
 		"removeComments": true,
 		"preserveConstEnums": true,
 		"declaration": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
 		"lib": [
-			"dom",
-			"es2015"
+			"ES2020"
 		]
 	},
 	"include": [

@@ -1,5 +1,24 @@
 # changelog
 
+## 2.0.0
+
+### Breaking Changes
++ **Node.js 18+** is now required
++ Replaced `shortid` with `nanoid` for ID generation (deprecated dependency)
++ Updated TypeScript target from ES5 to ES2020
+
+### Dependencies Updated
++ `eventemitter2` from ^5.0.1 to ^6.4.9
++ `nanoid` ^3.3.8 (replaces `shortid`)
++ `@types/node` from ^7.0.31 to ^22.0.0
++ `ava` from ^0.19.1 to ^6.2.0
++ Added `typescript` ^5.7.2 as devDependency
+
+### Improvements
++ Modern TypeScript configuration with ES2020 target
++ Better error handling with proper type narrowing for caught exceptions
++ Improved type safety throughout the codebase
+
 ## 1.4.0
 
 + add option `serialize`. If true message will be parsed to format {type, payload}.

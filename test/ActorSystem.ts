@@ -1,4 +1,4 @@
-import { test } from "ava"
+import test from "ava"
 import { ActorSystem } from "../src/ActorSystem"
 import { AbstractActor } from "../src/AbstractActor"
 import { Serializer } from "../src";
@@ -32,7 +32,7 @@ test("onAny", t => {
   class Test extends AbstractActor {
     preStart() {
       this.context.system.eventStream.onAny((event, obj) => {
-        t.is(obj.n, 1)
+        t.is((obj as { n: number }).n, 1)
       })
     }
     createReceive() {
@@ -160,7 +160,7 @@ test("logging every message passthrough system", t => {
     }
 
     public preStart() {
-      this.context.system.eventStream.on("**", async function ({ n }) {
+      this.context.system.eventStream.on("**", async function ({ n }: { n: number }) {
         t.is(n, 1)
       })
     }
@@ -184,7 +184,7 @@ test("logging self message", t => {
     }
 
     public preStart() {
-      this.context.system.eventStream.on(this.context.path, function ({ n }) {
+      this.context.system.eventStream.on(this.context.path, function ({ n }: { n: number }) {
         t.is(n, 2)
       })
     }
@@ -205,8 +205,8 @@ test("serialize message", t => {
   class Test extends AbstractActor {
     preStart() {
       this.context.system.eventStream.onAny(function (_, message) {
-        t.is(message.type, "Entity")
-        t.notDeepEqual(message.paylod, { message: "hello" })
+        t.is((message as { type: string }).type, "Entity")
+        t.notDeepEqual((message as { paylod: object }).paylod, { message: "hello" })
       })
     }
     createReceive() {

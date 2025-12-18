@@ -1,18 +1,15 @@
 {
 	"compilerOptions": {
 		"strict": true,
-		"target": "es5",
-		"downlevelIteration": true,
+		"target": "ES2020",
 		"outDir": "../_test",
 		"module": "commonjs",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
 		"lib": [
-			"es2015"
+			"ES2020"
 		]
 	},
-	// "include": [
-	// 	"../test",
-	// 	"../typings"
-	// ],
 	"exclude": [
 		"node_modules"
 	]

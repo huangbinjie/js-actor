@@ -1,7 +1,7 @@
 import { ActorSystem } from "./ActorSystem"
 import { ActorRef } from "./ActorRef"
 import { IActorContext } from "./interfaces/IActorContext"
-import { generate } from "shortid"
+import { nanoid } from "nanoid"
 import { IActorScheduler } from "./interfaces/IActorScheduler";
 import { IActor } from "./interfaces/IActor";
 import { IActorReceive } from ".";
@@ -22,7 +22,7 @@ export class ActorContext implements IActorContext {
 		public path: string,
 	) { }
 
-	public actorOf<T extends IActor>(actor: T, name = generate()) {
+	public actorOf<T extends IActor>(actor: T, name = nanoid()) {
 		const actorRef = new ActorRef(actor, this.system, [], this.self, this.path + "/" + name, name)
 		this.children.set(name, actorRef)
 		actor.receive()

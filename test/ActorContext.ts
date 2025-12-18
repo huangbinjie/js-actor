@@ -1,4 +1,4 @@
-import { test } from "ava"
+import test from "ava"
 import { ActorSystem } from "../src/ActorSystem"
 import { AbstractActor } from "../src/AbstractActor"
 import { ActorReceiveBuilder } from "../src/ActorReceiveBuilder"

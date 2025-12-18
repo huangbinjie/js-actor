@@ -39,7 +39,7 @@ export class ActorRef<T extends IActor = IActor> {
 		this.actor.context.sender = sender || null
 		const serializedMessage = this.system.serialize && this.system.serializer.parse(message) || message
 		const result = this.actor.context.scheduler.callback(serializedMessage)
-		if (result && result.then) {
+		if (result && typeof result.then === 'function') {
 			return result
 		} else {
 			throw TypeError(`Please use ".answer" to catch ${Object.getPrototypeOf(message).constructor.name}`)

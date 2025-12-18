@@ -1,4 +1,4 @@
-import { test } from "ava"
+import test from "ava"
 import { ActorSystem } from "../src/ActorSystem"
 import { AbstractActor } from "../src/AbstractActor"
 
@@ -62,7 +62,7 @@ test("ask", async t => {
 	t.is("i have received your message: test1", res1)
 })
 
-test.cb("asynchronous of tell should dependent on what to do.", t => {
+test("asynchronous of tell should dependent on what to do.", async t => {
 	t.plan(2)
 	const system = new ActorSystem("testSystem")
 	let n = 0
@@ -84,7 +84,7 @@ test.cb("asynchronous of tell should dependent on what to do.", t => {
 	const testActor = system.actorOf(new TestActor)
 	testActor.tell(new Entity("111"))
 	t.is(n, 0)
-	setTimeout(() => t.end(), 50)
+	await new Promise(resolve => setTimeout(resolve, 50))
 })
 
 test("catch error message", t => {

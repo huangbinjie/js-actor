@@ -58,7 +58,7 @@ export class ActorScheduler implements IActorScheduler {
 				}
 			}
 		} catch (e) {
-			this.owner.postError(e)
+			this.owner.postError(e instanceof Error ? e : new Error(String(e)))
 		}
 
 	}
@@ -82,7 +82,9 @@ export class ActorScheduler implements IActorScheduler {
 	}
 
 	public start() {
-		this.system.eventStream.addListener(this.event, this.callback)
+		if (this.listeners.length > 0) {
+			this.system.eventStream.addListener(this.event, this.callback)
+		}
 	}
 
 	public replaceListeners(listeners: Listener[]) {
